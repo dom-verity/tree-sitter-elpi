@@ -1,0 +1,2547 @@
+[
+  {
+    "type": "abbrev_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "abbrev_form",
+          "named": true
+        },
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
+        },
+        {
+          "type": "typeabbrev",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "abbrev_form",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "lparen",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "rparen",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "abs_term",
+    "named": true,
+    "fields": {
+      "left": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "abstoken",
+            "named": true
+          }
+        ]
+      },
+      "op": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "bind",
+            "named": true
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "term",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "abstoken",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "bqname",
+          "named": true
+        },
+        {
+          "type": "lcname",
+          "named": true
+        },
+        {
+          "type": "qname",
+          "named": true
+        },
+        {
+          "type": "ucname",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "abstoken_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "abstoken",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "accumulate_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "accum_sig",
+          "named": true
+        },
+        {
+          "type": "accumulate",
+          "named": true
+        },
+        {
+          "type": "comma",
+          "named": true
+        },
+        {
+          "type": "filename",
+          "named": true
+        },
+        {
+          "type": "import",
+          "named": true
+        },
+        {
+          "type": "use_sig",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "app_term",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "attribute",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "cafter",
+          "named": true
+        },
+        {
+          "type": "cbefore",
+          "named": true
+        },
+        {
+          "type": "cexternal",
+          "named": true
+        },
+        {
+          "type": "cif",
+          "named": true
+        },
+        {
+          "type": "cindex",
+          "named": true
+        },
+        {
+          "type": "cname",
+          "named": true
+        },
+        {
+          "type": "creplace",
+          "named": true
+        },
+        {
+          "type": "indexing",
+          "named": true
+        },
+        {
+          "type": "lparen",
+          "named": true
+        },
+        {
+          "type": "rparen",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "attributes",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "attribute",
+          "named": true
+        },
+        {
+          "type": "external",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "atype_term",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "lparen",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "rparen",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "type_term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "chr_rule",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "attributes",
+          "named": true
+        },
+        {
+          "type": "bind",
+          "named": true
+        },
+        {
+          "type": "iff",
+          "named": true
+        },
+        {
+          "type": "pipe",
+          "named": true
+        },
+        {
+          "type": "rule",
+          "named": true
+        },
+        {
+          "type": "sequent",
+          "named": true
+        },
+        {
+          "type": "term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "clause_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "attributes",
+          "named": true
+        },
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "closed_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "closed",
+          "named": true
+        },
+        {
+          "type": "comma",
+          "named": true
+        },
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "closed_term",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "arrow",
+          "named": true
+        },
+        {
+          "type": "as",
+          "named": true
+        },
+        {
+          "type": "conj",
+          "named": true
+        },
+        {
+          "type": "conj2",
+          "named": true
+        },
+        {
+          "type": "cons",
+          "named": true
+        },
+        {
+          "type": "cut",
+          "named": true
+        },
+        {
+          "type": "darrow",
+          "named": true
+        },
+        {
+          "type": "div",
+          "named": true
+        },
+        {
+          "type": "eq",
+          "named": true
+        },
+        {
+          "type": "eq2",
+          "named": true
+        },
+        {
+          "type": "family_and",
+          "named": true
+        },
+        {
+          "type": "family_btick",
+          "named": true
+        },
+        {
+          "type": "family_eq",
+          "named": true
+        },
+        {
+          "type": "family_exp",
+          "named": true
+        },
+        {
+          "type": "family_gt",
+          "named": true
+        },
+        {
+          "type": "family_lt",
+          "named": true
+        },
+        {
+          "type": "family_or",
+          "named": true
+        },
+        {
+          "type": "family_plus",
+          "named": true
+        },
+        {
+          "type": "family_qmark",
+          "named": true
+        },
+        {
+          "type": "family_sharp",
+          "named": true
+        },
+        {
+          "type": "family_tick",
+          "named": true
+        },
+        {
+          "type": "family_tilde",
+          "named": true
+        },
+        {
+          "type": "family_times",
+          "named": true
+        },
+        {
+          "type": "float",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        },
+        {
+          "type": "is",
+          "named": true
+        },
+        {
+          "type": "list_term",
+          "named": true
+        },
+        {
+          "type": "lparen",
+          "named": true
+        },
+        {
+          "type": "minus",
+          "named": true
+        },
+        {
+          "type": "minusi",
+          "named": true
+        },
+        {
+          "type": "minusr",
+          "named": true
+        },
+        {
+          "type": "minuss",
+          "named": true
+        },
+        {
+          "type": "mod",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "or",
+          "named": true
+        },
+        {
+          "type": "paren_term",
+          "named": true
+        },
+        {
+          "type": "pi",
+          "named": true
+        },
+        {
+          "type": "qdash",
+          "named": true
+        },
+        {
+          "type": "sigma",
+          "named": true
+        },
+        {
+          "type": "slash",
+          "named": true
+        },
+        {
+          "type": "spilled_term",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "vdash",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "comma",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "conj",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "constraint_section",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "chr_rule",
+          "named": true
+        },
+        {
+          "type": "constraint",
+          "named": true
+        },
+        {
+          "type": "lcurly",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "rcurly",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "ctype_term",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "atype_term",
+          "named": true
+        },
+        {
+          "type": "lparen",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "rparen",
+          "named": true
+        },
+        {
+          "type": "type_term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "abbrev_decl",
+          "named": true
+        },
+        {
+          "type": "accumulate_decl",
+          "named": true
+        },
+        {
+          "type": "clause_decl",
+          "named": true
+        },
+        {
+          "type": "constraint_section",
+          "named": true
+        },
+        {
+          "type": "fixity_decl",
+          "named": true
+        },
+        {
+          "type": "ignored_decl",
+          "named": true
+        },
+        {
+          "type": "kind_decl",
+          "named": true
+        },
+        {
+          "type": "local_decl",
+          "named": true
+        },
+        {
+          "type": "macro_decl",
+          "named": true
+        },
+        {
+          "type": "mode_decl",
+          "named": true
+        },
+        {
+          "type": "namespace_section",
+          "named": true
+        },
+        {
+          "type": "pred_decl",
+          "named": true
+        },
+        {
+          "type": "program_section",
+          "named": true
+        },
+        {
+          "type": "shorten_decl",
+          "named": true
+        },
+        {
+          "type": "type_decl",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "defto",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "exportdef_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "comma",
+          "named": true
+        },
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "exportdef",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "type_term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "filename",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "fixity",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "infix",
+          "named": true
+        },
+        {
+          "type": "infixl",
+          "named": true
+        },
+        {
+          "type": "infixr",
+          "named": true
+        },
+        {
+          "type": "postfix",
+          "named": true
+        },
+        {
+          "type": "postfixl",
+          "named": true
+        },
+        {
+          "type": "prefix",
+          "named": true
+        },
+        {
+          "type": "prefixr",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "fixity_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "comma",
+          "named": true
+        },
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "fixity",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "id",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "bqname",
+          "named": true
+        },
+        {
+          "type": "lcname",
+          "named": true
+        },
+        {
+          "type": "qname",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "ignored_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "closed_decl",
+          "named": true
+        },
+        {
+          "type": "exportdef_decl",
+          "named": true
+        },
+        {
+          "type": "localkind_decl",
+          "named": true
+        },
+        {
+          "type": "module_decl",
+          "named": true
+        },
+        {
+          "type": "sig_decl",
+          "named": true
+        },
+        {
+          "type": "useonly_decl",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "indexing",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "freshuv",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "kind_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "comma",
+          "named": true
+        },
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "kind",
+          "named": true
+        },
+        {
+          "type": "kind_term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "kind_term",
+    "named": true,
+    "fields": {
+      "left": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "kind_term",
+            "named": true
+          }
+        ]
+      },
+      "op": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "arrow",
+            "named": true
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "kind_term",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "lcurly",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "list_term",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "comma",
+          "named": true
+        },
+        {
+          "type": "lbracket",
+          "named": true
+        },
+        {
+          "type": "pipe",
+          "named": true
+        },
+        {
+          "type": "rbracket",
+          "named": true
+        },
+        {
+          "type": "term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "local_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "comma",
+          "named": true
+        },
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "local",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "type_term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "localkind_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "comma",
+          "named": true
+        },
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "localkind",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "macro_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "atname",
+          "named": true
+        },
+        {
+          "type": "defto",
+          "named": true
+        },
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "macro",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "mode_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "io",
+          "named": true
+        },
+        {
+          "type": "lparen",
+          "named": true
+        },
+        {
+          "type": "mode",
+          "named": true
+        },
+        {
+          "type": "rparen",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "module_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "module",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "multi_bind",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "abstoken_list",
+          "named": true
+        },
+        {
+          "type": "bind",
+          "named": true
+        },
+        {
+          "type": "pi",
+          "named": true
+        },
+        {
+          "type": "sigma",
+          "named": true
+        },
+        {
+          "type": "term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "name",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "atname",
+          "named": true
+        },
+        {
+          "type": "bqname",
+          "named": true
+        },
+        {
+          "type": "lcname",
+          "named": true
+        },
+        {
+          "type": "qname",
+          "named": true
+        },
+        {
+          "type": "ucname",
+          "named": true
+        },
+        {
+          "type": "uname",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "namespace_section",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "decl",
+          "named": true
+        },
+        {
+          "type": "lcurly",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "namespace",
+          "named": true
+        },
+        {
+          "type": "rcurly",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "paren_term",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "lparen",
+          "named": true
+        },
+        {
+          "type": "rparen",
+          "named": true
+        },
+        {
+          "type": "term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pred_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "attributes",
+          "named": true
+        },
+        {
+          "type": "comma",
+          "named": true
+        },
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "pred",
+          "named": true
+        },
+        {
+          "type": "pred_item",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pred_item",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "io_colon",
+          "named": true
+        },
+        {
+          "type": "type_term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "prog_begin",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "prog_end",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "program_section",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "decl",
+          "named": true
+        },
+        {
+          "type": "prog_begin",
+          "named": true
+        },
+        {
+          "type": "prog_end",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "rcurly",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "sequent",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "closed_term",
+          "named": true
+        },
+        {
+          "type": "colon",
+          "named": true
+        },
+        {
+          "type": "lparen",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "rparen",
+          "named": true
+        },
+        {
+          "type": "term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "shorten_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "shorten",
+          "named": true
+        },
+        {
+          "type": "trie",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "sig_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "sig",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "source_file",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "decl",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "spilled_term",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "lcurly",
+          "named": true
+        },
+        {
+          "type": "rcurly",
+          "named": true
+        },
+        {
+          "type": "term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "string",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "escape_sequence",
+          "named": true
+        },
+        {
+          "type": "quote_escape",
+          "named": true
+        },
+        {
+          "type": "string_content",
+          "named": true
+        },
+        {
+          "type": "string_newline",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "subtrie",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "comma",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "lcurly",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "rcurly",
+          "named": true
+        },
+        {
+          "type": "subtrie",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "term",
+    "named": true,
+    "fields": {
+      "expr": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "term",
+            "named": true
+          }
+        ]
+      },
+      "left": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "term",
+            "named": true
+          }
+        ]
+      },
+      "op": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "arrow",
+            "named": true
+          },
+          {
+            "type": "as",
+            "named": true
+          },
+          {
+            "type": "conj",
+            "named": true
+          },
+          {
+            "type": "conj2",
+            "named": true
+          },
+          {
+            "type": "darrow",
+            "named": true
+          },
+          {
+            "type": "div",
+            "named": true
+          },
+          {
+            "type": "eq",
+            "named": true
+          },
+          {
+            "type": "eq2",
+            "named": true
+          },
+          {
+            "type": "family_and",
+            "named": true
+          },
+          {
+            "type": "family_btick",
+            "named": true
+          },
+          {
+            "type": "family_eq",
+            "named": true
+          },
+          {
+            "type": "family_exp",
+            "named": true
+          },
+          {
+            "type": "family_gt",
+            "named": true
+          },
+          {
+            "type": "family_lt",
+            "named": true
+          },
+          {
+            "type": "family_or",
+            "named": true
+          },
+          {
+            "type": "family_plus",
+            "named": true
+          },
+          {
+            "type": "family_qmark",
+            "named": true
+          },
+          {
+            "type": "family_sharp",
+            "named": true
+          },
+          {
+            "type": "family_tick",
+            "named": true
+          },
+          {
+            "type": "family_tilde",
+            "named": true
+          },
+          {
+            "type": "family_times",
+            "named": true
+          },
+          {
+            "type": "is",
+            "named": true
+          },
+          {
+            "type": "minus",
+            "named": true
+          },
+          {
+            "type": "minusi",
+            "named": true
+          },
+          {
+            "type": "minusr",
+            "named": true
+          },
+          {
+            "type": "minuss",
+            "named": true
+          },
+          {
+            "type": "mod",
+            "named": true
+          },
+          {
+            "type": "or",
+            "named": true
+          },
+          {
+            "type": "qdash",
+            "named": true
+          },
+          {
+            "type": "slash",
+            "named": true
+          },
+          {
+            "type": "vdash",
+            "named": true
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "term",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "abs_term",
+          "named": true
+        },
+        {
+          "type": "app_term",
+          "named": true
+        },
+        {
+          "type": "arrow",
+          "named": true
+        },
+        {
+          "type": "as",
+          "named": true
+        },
+        {
+          "type": "conj",
+          "named": true
+        },
+        {
+          "type": "conj2",
+          "named": true
+        },
+        {
+          "type": "cons",
+          "named": true
+        },
+        {
+          "type": "cut",
+          "named": true
+        },
+        {
+          "type": "darrow",
+          "named": true
+        },
+        {
+          "type": "div",
+          "named": true
+        },
+        {
+          "type": "eq",
+          "named": true
+        },
+        {
+          "type": "eq2",
+          "named": true
+        },
+        {
+          "type": "family_and",
+          "named": true
+        },
+        {
+          "type": "family_btick",
+          "named": true
+        },
+        {
+          "type": "family_eq",
+          "named": true
+        },
+        {
+          "type": "family_exp",
+          "named": true
+        },
+        {
+          "type": "family_gt",
+          "named": true
+        },
+        {
+          "type": "family_lt",
+          "named": true
+        },
+        {
+          "type": "family_or",
+          "named": true
+        },
+        {
+          "type": "family_plus",
+          "named": true
+        },
+        {
+          "type": "family_qmark",
+          "named": true
+        },
+        {
+          "type": "family_sharp",
+          "named": true
+        },
+        {
+          "type": "family_tick",
+          "named": true
+        },
+        {
+          "type": "family_tilde",
+          "named": true
+        },
+        {
+          "type": "family_times",
+          "named": true
+        },
+        {
+          "type": "float",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        },
+        {
+          "type": "is",
+          "named": true
+        },
+        {
+          "type": "list_term",
+          "named": true
+        },
+        {
+          "type": "lparen",
+          "named": true
+        },
+        {
+          "type": "minus",
+          "named": true
+        },
+        {
+          "type": "minusi",
+          "named": true
+        },
+        {
+          "type": "minusr",
+          "named": true
+        },
+        {
+          "type": "minuss",
+          "named": true
+        },
+        {
+          "type": "mod",
+          "named": true
+        },
+        {
+          "type": "multi_bind",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "or",
+          "named": true
+        },
+        {
+          "type": "paren_term",
+          "named": true
+        },
+        {
+          "type": "pi",
+          "named": true
+        },
+        {
+          "type": "qdash",
+          "named": true
+        },
+        {
+          "type": "sigma",
+          "named": true
+        },
+        {
+          "type": "slash",
+          "named": true
+        },
+        {
+          "type": "spilled_term",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "vdash",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "trie",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "comma",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "lcurly",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "rcurly",
+          "named": true
+        },
+        {
+          "type": "subtrie",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "attributes",
+          "named": true
+        },
+        {
+          "type": "comma",
+          "named": true
+        },
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
+        },
+        {
+          "type": "type_term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_term",
+    "named": true,
+    "fields": {
+      "left": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type_term",
+            "named": true
+          }
+        ]
+      },
+      "op": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "arrow",
+            "named": true
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type_term",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "ctype_term",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "useonly_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "comma",
+          "named": true
+        },
+        {
+          "type": "eof",
+          "named": true
+        },
+        {
+          "type": "full_stop",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "type_term",
+          "named": true
+        },
+        {
+          "type": "useonly",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "vdash",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "\"",
+    "named": false
+  },
+  {
+    "type": ",",
+    "named": false
+  },
+  {
+    "type": ":-",
+    "named": false
+  },
+  {
+    "type": "accum_sig",
+    "named": true
+  },
+  {
+    "type": "accumulate",
+    "named": true
+  },
+  {
+    "type": "arrow",
+    "named": true
+  },
+  {
+    "type": "as",
+    "named": true
+  },
+  {
+    "type": "atname",
+    "named": true
+  },
+  {
+    "type": "bind",
+    "named": true
+  },
+  {
+    "type": "block_comment",
+    "named": true
+  },
+  {
+    "type": "bqname",
+    "named": true
+  },
+  {
+    "type": "cafter",
+    "named": true
+  },
+  {
+    "type": "cbefore",
+    "named": true
+  },
+  {
+    "type": "cexternal",
+    "named": true
+  },
+  {
+    "type": "cif",
+    "named": true
+  },
+  {
+    "type": "cindex",
+    "named": true
+  },
+  {
+    "type": "closed",
+    "named": true
+  },
+  {
+    "type": "cname",
+    "named": true
+  },
+  {
+    "type": "colon",
+    "named": true
+  },
+  {
+    "type": "conj2",
+    "named": true
+  },
+  {
+    "type": "cons",
+    "named": true
+  },
+  {
+    "type": "constraint",
+    "named": true
+  },
+  {
+    "type": "creplace",
+    "named": true
+  },
+  {
+    "type": "cut",
+    "named": true
+  },
+  {
+    "type": "darrow",
+    "named": true
+  },
+  {
+    "type": "div",
+    "named": true
+  },
+  {
+    "type": "eof",
+    "named": true
+  },
+  {
+    "type": "eq",
+    "named": true
+  },
+  {
+    "type": "eq2",
+    "named": true
+  },
+  {
+    "type": "escape_sequence",
+    "named": true
+  },
+  {
+    "type": "exportdef",
+    "named": true
+  },
+  {
+    "type": "external",
+    "named": true
+  },
+  {
+    "type": "family_and",
+    "named": true
+  },
+  {
+    "type": "family_btick",
+    "named": true
+  },
+  {
+    "type": "family_eq",
+    "named": true
+  },
+  {
+    "type": "family_exp",
+    "named": true
+  },
+  {
+    "type": "family_gt",
+    "named": true
+  },
+  {
+    "type": "family_lt",
+    "named": true
+  },
+  {
+    "type": "family_or",
+    "named": true
+  },
+  {
+    "type": "family_plus",
+    "named": true
+  },
+  {
+    "type": "family_qmark",
+    "named": true
+  },
+  {
+    "type": "family_sharp",
+    "named": true
+  },
+  {
+    "type": "family_tick",
+    "named": true
+  },
+  {
+    "type": "family_tilde",
+    "named": true
+  },
+  {
+    "type": "family_times",
+    "named": true
+  },
+  {
+    "type": "float",
+    "named": true
+  },
+  {
+    "type": "freshuv",
+    "named": true
+  },
+  {
+    "type": "full_stop",
+    "named": true
+  },
+  {
+    "type": "iff",
+    "named": true
+  },
+  {
+    "type": "import",
+    "named": true
+  },
+  {
+    "type": "infix",
+    "named": true
+  },
+  {
+    "type": "infixl",
+    "named": true
+  },
+  {
+    "type": "infixr",
+    "named": true
+  },
+  {
+    "type": "integer",
+    "named": true
+  },
+  {
+    "type": "io",
+    "named": true
+  },
+  {
+    "type": "io_colon",
+    "named": true
+  },
+  {
+    "type": "is",
+    "named": true
+  },
+  {
+    "type": "kind",
+    "named": true
+  },
+  {
+    "type": "lbracket",
+    "named": true
+  },
+  {
+    "type": "lcname",
+    "named": true
+  },
+  {
+    "type": "line_comment",
+    "named": true
+  },
+  {
+    "type": "local",
+    "named": true
+  },
+  {
+    "type": "localkind",
+    "named": true
+  },
+  {
+    "type": "lparen",
+    "named": true
+  },
+  {
+    "type": "macro",
+    "named": true
+  },
+  {
+    "type": "minus",
+    "named": true
+  },
+  {
+    "type": "minusi",
+    "named": true
+  },
+  {
+    "type": "minusr",
+    "named": true
+  },
+  {
+    "type": "minuss",
+    "named": true
+  },
+  {
+    "type": "mod",
+    "named": true
+  },
+  {
+    "type": "mode",
+    "named": true
+  },
+  {
+    "type": "module",
+    "named": true
+  },
+  {
+    "type": "namespace",
+    "named": true
+  },
+  {
+    "type": "or",
+    "named": true
+  },
+  {
+    "type": "pi",
+    "named": true
+  },
+  {
+    "type": "pipe",
+    "named": true
+  },
+  {
+    "type": "postfix",
+    "named": true
+  },
+  {
+    "type": "postfixl",
+    "named": true
+  },
+  {
+    "type": "pred",
+    "named": true
+  },
+  {
+    "type": "prefix",
+    "named": true
+  },
+  {
+    "type": "prefixr",
+    "named": true
+  },
+  {
+    "type": "qdash",
+    "named": true
+  },
+  {
+    "type": "qname",
+    "named": true
+  },
+  {
+    "type": "quote_escape",
+    "named": true
+  },
+  {
+    "type": "rbracket",
+    "named": true
+  },
+  {
+    "type": "rparen",
+    "named": true
+  },
+  {
+    "type": "rule",
+    "named": true
+  },
+  {
+    "type": "shorten",
+    "named": true
+  },
+  {
+    "type": "sig",
+    "named": true
+  },
+  {
+    "type": "sigma",
+    "named": true
+  },
+  {
+    "type": "skip_comment",
+    "named": true
+  },
+  {
+    "type": "slash",
+    "named": true
+  },
+  {
+    "type": "string_content",
+    "named": true
+  },
+  {
+    "type": "string_newline",
+    "named": true
+  },
+  {
+    "type": "type",
+    "named": true
+  },
+  {
+    "type": "typeabbrev",
+    "named": true
+  },
+  {
+    "type": "ucname",
+    "named": true
+  },
+  {
+    "type": "uname",
+    "named": true
+  },
+  {
+    "type": "use_sig",
+    "named": true
+  },
+  {
+    "type": "useonly",
+    "named": true
+  },
+  {
+    "type": "{",
+    "named": false
+  },
+  {
+    "type": "}",
+    "named": false
+  }
+]
