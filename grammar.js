@@ -171,8 +171,8 @@ module.exports = grammar({
             infix_rule($, "arrow", $.typeid, $.kind_term)
         ),
 
-        kind_decl: $ => seq($.kind, sep_list1($.comma, $.name), $.kind_term,
-                            $._terminator),
+        kind_decl: $ => seq($.kind, sep_list1($.comma, $.constant),
+                            $.kind_term, $._terminator),
 
         // Type declarations
         type_term: $ => choice(
@@ -181,54 +181,55 @@ module.exports = grammar({
         ),
 
         _ctype_term: $ => choice(
-            $.name,
+            $.constant,
             $._atype_term,
             seq($.lparen, $.type_term, $.rparen)
         ),
 
         _atype_term: $ => apply_prec("atomic", seq(
-            $.name,
+            $.constant,
             repeat1($._atype_param)
         )),
 
         _atype_param: $ => choice(
             $.string,
-            $.name,
+            $.constant,
             seq($.lparen, $.type_term, $.rparen)
         ),
 
         type_decl: $ => seq(
-            optional($.attributes), $.type, sep_list1($.comma, $.name),
+            optional($.attributes), $.type, sep_list1($.comma, $.constant),
             $.type_term, $._terminator
         ),
 
         // Type abbreviation
         abbrev_form: $ => choice(
-            $.name,
-            seq($.lparen, $.name, repeat1($.name), $.rparen)
+            $.constant,
+            seq($.lparen, $.constant, repeat1($.constant), $.rparen)
             // seq($.lparen, $.abbrev_form, $.rparen)
         ),
 
         abbrev_decl: $ => seq($.typeabbrev, $.abbrev_form, $.type_term,
                               $._terminator),
 
-        // Fixity declaration - compatibility with Teyjus, parse error in ELPI
+        // Fixity declaration - compatible with Teyjus, parse error in ELPI
         fixity: $ => choice(
             $.infix, $.infixl, $.infixr,
             $.prefix, $.prefixr,
             $.postfix, $.postfixl
         ),
 
-        fixity_decl: $ => seq($.fixity, sep_list1($.comma, $.name), $.integer,
-                              $._terminator),
+        fixity_decl: $ => seq($.fixity, sep_list1($.comma, $.constant),
+                              $.integer, $._terminator),
 
         // Mode and predicate declarations
         mode_decl: $ => seq(
-            $.mode, $.lparen, $.name, repeat1($.io), $.rparen, $._terminator
+            $.mode, $.lparen, $.constant, repeat1($.io),
+            $.rparen, $._terminator
         ),
 
         pred_decl: $ => seq(
-            optional($.attributes), $.pred, $.name,
+            optional($.attributes), $.pred, $.constant,
             sep_list(optional($.comma), $.pred_item), $._terminator
         ),
 
@@ -241,13 +242,13 @@ module.exports = grammar({
 
         // Macro declarations
         macro_decl: $ => seq(
-            $.macro, $.name, repeat($.name),
+            $.macro, $.constant, repeat($.constant),
             $.defto, $._term, $._terminator
         ),
 
         // Namespaces
         namespace_section: $ => seq(
-            $.namespace, $.name, $.lcurly, repeat($.decl), $.rcurly
+            $.namespace, $.constant, $.lcurly, repeat($.decl), $.rcurly
         ),
 
         // Program
@@ -261,18 +262,18 @@ module.exports = grammar({
         ),
 
         trie: $ => seq(
-            $.name, $.full_stop, $.lcurly,
+            $.constant, $.full_stop, $.lcurly,
             sep_list1($.comma, $.subtrie), $.rcurly
         ),
 
         subtrie: $ => seq(
-            $.name, optional(seq($.full_stop, $.lcurly,
+            $.constant, optional(seq($.full_stop, $.lcurly,
                                  sep_list1($.comma, $.subtrie),$.rcurly))
         ),
 
         // Local declaration
         local_decl: $ => seq(
-            $.local, sep_list1($.comma, $.name), optional($.type_term),
+            $.local, sep_list1($.comma, $.constant), optional($.type_term),
             $._terminator
         ),
 
@@ -286,15 +287,15 @@ module.exports = grammar({
             $.closed_decl
         ),
 
-        module_decl: $ => seq($.module, $.name, $._terminator),
-        sig_decl: $ => seq($.sig, $.name, $._terminator),
-        exportdef_decl: $ => seq($.exportdef, sep_list1($.comma, $.name),
+        module_decl: $ => seq($.module, $.constant, $._terminator),
+        sig_decl: $ => seq($.sig, $.constant, $._terminator),
+        exportdef_decl: $ => seq($.exportdef, sep_list1($.comma, $.constant),
                                  optional($.type_term), $._terminator),
-        localkind_decl: $ => seq($.localkind, sep_list1($.comma, $.name),
+        localkind_decl: $ => seq($.localkind, sep_list1($.comma, $.constant),
                                  $._terminator),
-        useonly_decl: $ => seq($.useonly, sep_list1($.comma, $.name),
+        useonly_decl: $ => seq($.useonly, sep_list1($.comma, $.constant),
                                optional($.type_term), $._terminator),
-        closed_decl: $ => seq($.closed, sep_list1($.comma, $.name),
+        closed_decl: $ => seq($.closed, sep_list1($.comma, $.constant),
                               $._terminator),
 
         // ELPI recognises these imports, they are all equivalent to "accumulate"
@@ -303,11 +304,11 @@ module.exports = grammar({
             sep_list1($.comma, $.filename)
         ),
 
-        filename: $ => choice($.name, $.string),
+        filename: $ => choice($.constant, $.string),
 
         // Constraint handling rules
         constraint_section: $=> seq(
-            $.constraint, repeat($.name), $.lcurly,
+            $.constraint, repeat($.constant), $.lcurly,
             repeat($.chr_rule), $.rcurly
         ),
 
@@ -318,7 +319,7 @@ module.exports = grammar({
 
         sequent: $ => choice(
             $.closed_term,
-            seq($.lparen, $.name, $.colon, $._term, $.rparen)
+            seq($.lparen, $.constant, $.colon, $._term, $.rparen)
         ),
 
         // Terms
@@ -336,7 +337,7 @@ module.exports = grammar({
             $.list_term,
             $.spilled_term,
             $.cut, $.pi, $.sigma,
-            $.name,
+            $.constant,
             $.integer,
             $.float,
             $.string,
@@ -374,10 +375,10 @@ module.exports = grammar({
                 (op) => infix_rule($, op, $._term, $._term)));
         },
 
-        // Should the following be used in place of the plain
-        // $.name token?
+        // We don't restrict the use of names anywhere in the grammar.
         constant: $ => choice(
-            $.name,
+            $.ucname, $.lcname, $.uname, $.qname,
+            $.bqname, $.atname, $.freshuv,
             seq($.lparen, $._mixfix_symb, $.lparen)
         ),
 
@@ -403,11 +404,13 @@ module.exports = grammar({
                                                   seq(field("left", $._term),
                                                       field("right", $._term)))),
 
-        abs_term: $ => infix_rule($, "bind", $.name, $._term),
+        abs_term: $ => infix_rule($, "bind", $.constant, $._term),
 
         multi_bind: $ => prec.dynamic(1, seq(
             choice($.pi, $.sigma),
-            infix_rule($, "bind", repeat1($.name), $._term))),
+            infix_rule($, "bind", $.params, $._term))),
+
+        params: $ => repeat1($.constant),
 
         spilled_term: $ => prec.dynamic(0, seq($.lcurly, $._term, $.rcurly)),
 
@@ -425,8 +428,8 @@ module.exports = grammar({
          * disambiguates the use of "," in a list of terms by preferring its
          * use as a list item separator.
          *
-         * Note: this method doesn't work if we use sep_list1, so we hard code
-         * the production to implement a comma separated list.
+         * Note: this method doesn't work if we use sep_list1, so we hard
+         * code the production to implement a comma separated list.
          */
         _list_items2: $ => choice(
             $._term,
@@ -499,8 +502,6 @@ module.exports = grammar({
         // id: $ => choice($.lcname, $.qname, $.bqname),
         // abstoken: $ => choice($.ucname, $.lcname, $.qname, $.bqname),
         // vident: $ => choice($.ucname, $.uname, $.freshuv),
-        name: $ => choice($.ucname, $.lcname, $.uname, $.qname,
-                          $.bqname, $.atname, $.freshuv),
 
         ucname: $ => token(seq(ucase, repeat(idchar))),        // bound or free variable
         lcname: $ => token(seq(lcase, repeat(idchar))),        // bound variable or constant

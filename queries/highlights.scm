@@ -60,33 +60,33 @@
 (skip_comment) @comment
 
 ;; Reserved names
-(typeid) @reserved
-(pi) @reserved
-(sigma) @reserved
-(cut) @reserved
+(typeid) @type.builtin
+(pi) @constant.builtin
+(sigma) @constant.builtin
+(cut) @constant.builtin
 
 ;; Brackets
-(prog_begin) @bracket
-(prog_end) @bracket
-(lparen) @bracket
-(rparen) @bracket
-(lbracket) @bracket
-(rbracket) @bracket
-(lcurly) @bracket
-(rcurly) @bracket
+(prog_begin) @punctuation.bracket
+(prog_end) @punctuation.bracket
+(lparen) @punctuation.bracket
+(rparen) @punctuation.bracket
+(lbracket) @punctuation.bracket
+(rbracket) @punctuation.bracket
+(lcurly) @punctuation.bracket
+(rcurly) @punctuation.bracket
 
 ;; Delimiters
-(comma) @delimiter
-(pipe) @delimiter
-(bind) @delimiter
-(iff) @delimiter
-(full_stop) @delimiter
+(comma) @punctuation.delimiter
+(pipe) @punctuation.delimiter
+(bind) @punctuation.delimiter
+(iff) @punctuation.delimiter
+(full_stop) @punctuation.delimiter
 
 ;; Identifiers
-((name (ucname)) @variable (#is-not? local))
-((name [(uname) (freshuv)]) @wildcard (#is-not? local))
-((name [(lcname) (qname) (bqname)]) @constant (#is-not? local))
-((name (atname)) @macro (#is-not? local))
+(constant ((ucname) @variable (#is-not? local)))
+(constant ([(uname) (freshuv)] @wildcard (#is-not? local)))
+(constant ([(lcname) (qname) (bqname)] @constant (#is-not? local)))
+(constant ((atname) @macro (#is-not? local)))
 
 ;; Literal constants
 (string) @string
@@ -132,5 +132,5 @@
 (io_colon) @mode
 
 ;; Bound variables
-(abs_term (name) @parameter (bind))
-(multi_bind (name) @parameter (bind))
+(abs_term left: (constant (_) @variable.parameter))
+(params (constant (_) @variable.parameter)+)

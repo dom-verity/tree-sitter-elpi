@@ -15,9 +15,9 @@
 ;; Local scopes and parameters of bindings
 
 (abs_term) @local.scope
-(abs_term (name) @local.definition (bind))
+(abs_term left: (constant (_) @local.definition))
 
 (multi_bind) @local.scope
-(multi_bind (name) @local.definition (bind))
+(params (constant (_) @local.definition)+)
 
-(name) @local.reference
+(constant (_) @local.reference)
