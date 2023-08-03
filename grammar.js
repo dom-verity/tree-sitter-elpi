@@ -2,6 +2,8 @@
  * Tree sitter grammar for the ELPI (https://github.com/LPCIC/elpi)
  * dialect of λProlog (https://www.lix.polytechnique.fr/~dale/lProlog/).
  *
+ * File:            Tree sitter grammar specification.
+ *
  * Original Author: Dominic Verity (dominic.verity@anu.edu.au)
  * License:         MIT
  *
@@ -16,7 +18,7 @@ const out = process.stdout.write.bind(process.stdout);
 const ucase = /[A-Z]/;
 const lcase = /[a-z]/;
 const digit = /[0-9]/;
-const schar2 =  /[\+\*/\^<>`'\\?@#~=&!]/;
+const schar2 =  /[\+\*/\^<>`'\?@#~=&!]/;
 const schar = choice(schar2, /[-\$_]/);
 const idchar = choice(ucase, lcase, digit, schar);
 const idcharns = choice(idchar, seq('.', choice(ucase, lcase)));
@@ -31,43 +33,42 @@ const allnames = choice(
 const PREC = {
     AS: [0, prec],                      // as (non assoc, infix)
     BIND: [1, prec.right],              // \ (right assoc, infix)
-    MULTI_BIND: [2,prec.right],         // Multi-binder
-    VDASH: [3, prec],                   // :- (non assoc, infix)
-    QDASH: [3, prec],                   // ?- (non assoc, infix)
-    OR: [4, prec.right],                // ; (right assoc, infix)
-    CONJ: [5, prec.right],              // , (right assoc, infix)
-    CONJ2: [5, prec.right],             // & (right assoc, infix)
-    ARROW: [6, prec.right],             // -> (right assoc, infix)
-    DARROW: [7, prec.right],            // => (right assoc, infix)
-    EQ: [8, prec],                      // = (non assoc, infix)
-    EQ2: [8, prec],                     // == (non assoc, infix)
-    FAMILY_LT: [8, prec],               // /<[symbchar]*/, =<, r<, i<, s<, r=<, i=<, s=< (non assoc, infix)
-    FAMILY_GT: [8, prec],               // />[symbchar]*/, r>, i>, s>, r>=, i>=, s>= (non assoc, infix)
-    IS: [8, prec],                      // is (non assoc, infix)
-    CONS: [9, prec.right],              // :: (right assoc, infix)
-    FAMILY_TICK: [10, prec],             // /'[symbchar]*/ (non assoc, infix)
-    FAMILY_EXP: [11, prec.left],        // /^[symbchar]*/ (left assoc, infix)
-    FAMILY_PLUS: [11, prec.left],       // /+[symbchar]*/, r+, i+, s+ (left assoc, infix)
-    MINUS: [11, prec.left],             // - (left assoc, infix)
-    MINUSR: [11, prec.left],            // r- (left assoc, infix)
-    MINUSI: [11, prec.left],            // i- (left assoc, infix)
-    MINUSS: [11, prec.left],            // s- (left assoc, infix)
-    FAMILY_TIMES: [12, prec.left],      // /*[symbchar]*/, r*, i*, s* (left assoc, infix)
-    SLASH: [12, prec.left],             // / (left assoc, infix)
-    DIV: [12, prec.left],               // div (left assoc, infix)
-    MOD: [12, prec.left],               // mod (left assoc, infix)
-    FAMILY_MINUS: [13, prec.right],     // /--[symbchar]*/ (right assoc, infix)
-    FAMILY_BTICK: [14, prec],           // /`[symbchar]*/ (non assoc, infix)
-    FAMILY_EQ: [15, prec.right],        // /==[symbchar]*/ (right assoc, infix)
-    FAMILY_OR: [16, prec.right],        // /||[symbchar]*/ (right assoc, infix)
-    FAMILY_AND: [17, prec.right],       // /&&[symbchar]*/ (right assoc, infix)
-    FAMILY_SHARP: [18, prec.left],      // /#[symbchar]*/ (left assoc, infix)
-    FAMILY_TILDE: [19, prec],           // /~[symbchar]*/, r~, i~ (non assoc, prefix)
-    FAMILY_QMARK: [20, prec],           // /?[symbchar]*/ (non assoc, postfix)
-    APP: [21, prec.left],               // application
-    ATOMIC: [22, prec],                 // most tightly bound sequences etc
-    COMMA: [23, prec],                  // comma separator in prolog list notation
-    DEFTO: [23, prec]                   // turnstile in macro definition
+    VDASH: [2, prec],                   // :- (non assoc, infix)
+    QDASH: [2, prec],                   // ?- (non assoc, infix)
+    OR: [3, prec.right],                // ; (right assoc, infix)
+    CONJ: [4, prec.right],              // , (right assoc, infix)
+    CONJ2: [4, prec.right],             // & (right assoc, infix)
+    ARROW: [5, prec.right],             // -> (right assoc, infix)
+    DARROW: [6, prec.right],            // => (right assoc, infix)
+    EQ: [7, prec],                      // = (non assoc, infix)
+    EQ2: [7, prec],                     // == (non assoc, infix)
+    FAMILY_LT: [7, prec],               // /<[symbchar]*/, =<, r<, i<, s<, r=<, i=<, s=< (non assoc, infix)
+    FAMILY_GT: [7, prec],               // />[symbchar]*/, r>, i>, s>, r>=, i>=, s>= (non assoc, infix)
+    IS: [7, prec],                      // is (non assoc, infix)
+    CONS: [8, prec.right],              // :: (right assoc, infix)
+    FAMILY_TICK: [9, prec],             // /'[symbchar]*/ (non assoc, infix)
+    FAMILY_EXP: [10, prec.left],        // /^[symbchar]*/ (left assoc, infix)
+    FAMILY_PLUS: [10, prec.left],       // /+[symbchar]*/, r+, i+, s+ (left assoc, infix)
+    MINUS: [10, prec.left],             // - (left assoc, infix)
+    MINUSR: [10, prec.left],            // r- (left assoc, infix)
+    MINUSI: [10, prec.left],            // i- (left assoc, infix)
+    MINUSS: [10, prec.left],            // s- (left assoc, infix)
+    FAMILY_TIMES: [11, prec.left],      // /*[symbchar]*/, r*, i*, s* (left assoc, infix)
+    SLASH: [11, prec.left],             // / (left assoc, infix)
+    DIV: [11, prec.left],               // div (left assoc, infix)
+    MOD: [11, prec.left],               // mod (left assoc, infix)
+    FAMILY_MINUS: [12, prec.right],     // /--[symbchar]*/ (right assoc, infix)
+    FAMILY_BTICK: [13, prec],           // /`[symbchar]*/ (non assoc, infix)
+    FAMILY_EQ: [14, prec.right],        // /==[symbchar]*/ (right assoc, infix)
+    FAMILY_OR: [15, prec.right],        // /||[symbchar]*/ (right assoc, infix)
+    FAMILY_AND: [16, prec.right],       // /&&[symbchar]*/ (right assoc, infix)
+    FAMILY_SHARP: [17, prec.left],      // /#[symbchar]*/ (left assoc, infix)
+    FAMILY_TILDE: [18, prec],           // /~[symbchar]*/, r~, i~ (non assoc, prefix)
+    FAMILY_QMARK: [19, prec],           // /?[symbchar]*/ (non assoc, postfix)
+    APP: [20, prec.left],               // application
+    ATOMIC: [21, prec],                 // most tightly bound sequences etc
+    COMMA: [22, prec],                  // comma separator in prolog list notation
+    DEFTO: [22, prec]                   // turnstile in macro definition
 };
 
 function apply_prec(n, r) {
@@ -77,24 +78,24 @@ function apply_prec(n, r) {
 
 function infix_rule(g, n, l, r) {
     p = PREC[n.toUpperCase()];
-    return p[1](p[0],
-                seq(field("left", l),
-                    field("op", g[n.toLowerCase()]),
-                    field("right", r)));
+    return p[1](p[0], seq(
+        field("left", l),
+        field("op", g[n.toLowerCase()]),
+        field("right", r)));
 };
 
 function postfix_rule(g, n, e) {
     p = PREC[n.toUpperCase()];
-    return p[1](p[0],
-                seq(field("expr", e),
-                    field("op", g[n.toLowerCase()])));
+    return p[1](p[0], seq(
+        field("exp", e),
+        field("op", g[n.toLowerCase()])));
 };
 
 function prefix_rule(g, n, e) {
     p = PREC[n.toUpperCase()];
-    return p[1](p[0],
-                seq(field("op", g[n.toLowerCase()]),
-                    field("expr", e)));
+    return p[1](p[0], seq(
+        field("op", g[n.toLowerCase()]),
+        field("exp", e)));
 };
 
 function sep_list1(s, r) {
@@ -118,8 +119,9 @@ module.exports = grammar({
     ],
 
     conflicts: $ => [
-        [$._infix_term, $._infix_term],
-        [$.lcurly, $.prog_begin]
+        [$.infix_term, $.infix_term],
+        [$.lcurly, $.prog_begin],
+        [$.multi_bind, $._atomic_term]
     ],
 
     rules: {
@@ -152,7 +154,8 @@ module.exports = grammar({
         ),
 
         attribute: $ => choice(
-            seq(choice($.cif, $.cname, $.cafter, $.cbefore, $.creplace), $.string),
+            seq(choice($.cif, $.cname, $.cafter, $.cbefore, $.creplace),
+                $.string),
             $.cexternal,
             seq($.cindex, $.lparen, repeat1($.indexing), $.rparen)
         ),
@@ -164,27 +167,27 @@ module.exports = grammar({
 
         // Kind declarations
         kind_term: $ => choice(
-            $.type,
-            infix_rule($, "arrow", $.kind_term, $.kind_term)
+            $.typeid,
+            infix_rule($, "arrow", $.typeid, $.kind_term)
         ),
 
-        kind_decl: $ => seq($.kind, sep_list1($.comma, $.id), $.kind_term,
+        kind_decl: $ => seq($.kind, sep_list1($.comma, $.name), $.kind_term,
                             $._terminator),
 
         // Type declarations
         type_term: $ => choice(
-            $.ctype_term,
+            $._ctype_term,
             infix_rule($, "arrow", $.type_term, $.type_term)
         ),
 
-        ctype_term: $ => choice(
+        _ctype_term: $ => choice(
             $.name,
-            $.atype_term,
+            $._atype_term,
             seq($.lparen, $.type_term, $.rparen)
         ),
 
-        atype_term: $ => apply_prec("atomic", seq(
-            $.id,
+        _atype_term: $ => apply_prec("atomic", seq(
+            $.name,
             repeat1($._atype_param)
         )),
 
@@ -195,18 +198,19 @@ module.exports = grammar({
         ),
 
         type_decl: $ => seq(
-            optional($.attributes), $.type, sep_list1($.comma, $.id),
+            optional($.attributes), $.type, sep_list1($.comma, $.name),
             $.type_term, $._terminator
         ),
 
         // Type abbreviation
         abbrev_form: $ => choice(
-            $.id,
-            seq($.lparen, $.id, repeat1($.name), $.rparen)
+            $.name,
+            seq($.lparen, $.name, repeat1($.name), $.rparen)
             // seq($.lparen, $.abbrev_form, $.rparen)
         ),
 
-        abbrev_decl: $ => seq($.typeabbrev, $.abbrev_form, $.type, $._terminator),
+        abbrev_decl: $ => seq($.typeabbrev, $.abbrev_form, $.type_term,
+                              $._terminator),
 
         // Fixity declaration - compatibility with Teyjus, parse error in ELPI
         fixity: $ => choice(
@@ -215,16 +219,16 @@ module.exports = grammar({
             $.postfix, $.postfixl
         ),
 
-        fixity_decl: $ => seq($.fixity, sep_list1($.comma, $.id), $.integer,
+        fixity_decl: $ => seq($.fixity, sep_list1($.comma, $.name), $.integer,
                               $._terminator),
 
         // Mode and predicate declarations
         mode_decl: $ => seq(
-            $.mode, $.lparen, $.id, repeat1($.io), $.rparen, $._terminator
+            $.mode, $.lparen, $.name, repeat1($.io), $.rparen, $._terminator
         ),
 
         pred_decl: $ => seq(
-            optional($.attributes), $.pred, $.id,
+            optional($.attributes), $.pred, $.name,
             sep_list(optional($.comma), $.pred_item), $._terminator
         ),
 
@@ -232,13 +236,13 @@ module.exports = grammar({
 
         // Clause declarations, the syntax of these is a subset of term syntax.
         clause_decl: $ => seq(
-            optional($.attributes), $.term, $._terminator
+            optional($.attributes), $._term, $._terminator
         ),
 
         // Macro declarations
         macro_decl: $ => seq(
-            $.macro, $.atname, repeat($.name),
-            $.defto, $.term, $._terminator
+            $.macro, $.name, repeat($.name),
+            $.defto, $._term, $._terminator
         ),
 
         // Namespaces
@@ -309,20 +313,20 @@ module.exports = grammar({
 
         chr_rule: $ => seq(
             optional($.attributes), $.rule, repeat($.sequent), $.bind,
-            repeat1($.sequent), $.pipe, $.term, $.iff, $.sequent
+            repeat1($.sequent), $.pipe, $._term, $.iff, $.sequent
         ),
 
         sequent: $ => choice(
             $.closed_term,
-            seq($.lparen, $.name, $.colon, $.term, $.rparen)
+            seq($.lparen, $.name, $.colon, $._term, $.rparen)
         ),
 
         // Terms
-        term: $ => choice(
+        _term: $ => choice(
             $._atomic_term,
-            $._infix_term,
-            $._prefix_term,
-            $._postfix_term,
+            $.infix_term,
+            $.prefix_term,
+            $.postfix_term,
             $.app_term,
             $.abs_term,
             $.multi_bind
@@ -349,7 +353,7 @@ module.exports = grammar({
          * illegal expressions like "a == b == c" by picking an associativity.
          */
 
-        _infix_term: $ => {
+        infix_term: $ => {
             const table = [
                 // Basic infix operators.
                 "minus", "minusr", "minusi", "minuss",
@@ -367,7 +371,7 @@ module.exports = grammar({
             ];
 
             return choice(...table.map(
-                (op) => infix_rule($, op, $.term, $.term)));
+                (op) => infix_rule($, op, $._term, $._term)));
         },
 
         _constant: $ => choice(
@@ -389,29 +393,29 @@ module.exports = grammar({
             return choice(...table.map((op) => $[op]));
         },
 
-        _prefix_term: $ => prefix_rule($, "family_tilde", $.term),
+        prefix_term: $ => prefix_rule($, "family_tilde", $._term),
 
-        _postfix_term: $ => postfix_rule($, "family_qmark", $.term),
+        postfix_term: $ => postfix_rule($, "family_qmark", $._term),
 
-        app_term: $ => apply_prec("app", seq($.term, $.term)),
+        app_term: $ => prec.dynamic(0, apply_prec("app",
+                                                  seq(field("left", $._term),
+                                                      field("right", $._term)))),
 
-        abs_term: $ => infix_rule($, "bind", $.abstoken, $.term),
+        abs_term: $ => infix_rule($, "bind", $.name, $._term),
 
-        multi_bind: $ => apply_prec("multi_bind", seq(
-            choice($.pi, $.sigma), $.abstoken_list, $.bind, $.term)
-                                   ),
+        multi_bind: $ => prec.dynamic(1, seq(
+            choice($.pi, $.sigma),
+            infix_rule($, "bind", repeat1($.name), $._term))),
 
-        abstoken_list: $ => repeat1($.abstoken),
+        spilled_term: $ => prec.dynamic(0, seq($.lcurly, $._term, $.rcurly)),
 
-        spilled_term: $ => prec.dynamic(0, seq($.lcurly, $.term, $.rcurly)),
-
-        paren_term: $ => seq($.lparen, $.term, $.rparen),
+        paren_term: $ => seq($.lparen, $._term, $.rparen),
 
         list_term: $ => seq($.lbracket, optional($._list_items), $.rbracket),
 
         _list_items: $ => seq(
             $._list_items2,
-            optional(seq($.pipe, $.term))),
+            optional(seq($.pipe, $._term))),
 
         /*
          * In the following we create a second terminal $.comma which
@@ -423,8 +427,8 @@ module.exports = grammar({
          * the production to implement a comma separated list.
          */
         _list_items2: $ => choice(
-            $.term,
-            seq($.term, $.comma, $._list_items2)
+            $._term,
+            seq($._term, $.comma, $._list_items2)
         ),
 
         /* not sure if we are allowing typed identifiers...
@@ -473,6 +477,7 @@ module.exports = grammar({
 
         pi: $ => token("pi"),
         sigma: $ => token("sigma"),
+        typeid: $ => token("type"),
 
         // Attributes
         external: $ => token("external"),
@@ -489,11 +494,11 @@ module.exports = grammar({
         io_colon: $ => token(/(i|o):/),
 
         // Names
-        id: $ => choice($.lcname, $.qname, $.bqname),
-        abstoken: $ => choice($.ucname, $.lcname, $.qname, $.bqname),
-        vident: $ => choice($.ucname, $.uname, $.freshuv),
-        name: $ => choice($.ucname, $.lcname, $.uname,
-                          $.qname, $.bqname, $.atname),
+        // id: $ => choice($.lcname, $.qname, $.bqname),
+        // abstoken: $ => choice($.ucname, $.lcname, $.qname, $.bqname),
+        // vident: $ => choice($.ucname, $.uname, $.freshuv),
+        name: $ => choice($.ucname, $.lcname, $.uname, $.qname,
+                          $.bqname, $.atname, $.freshuv),
 
         ucname: $ => token(seq(ucase, repeat(idchar))),        // bound or free variable
         lcname: $ => token(seq(lcase, repeat(idchar))),        // bound variable or constant
