@@ -1680,7 +1680,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_constant"
+          "name": "name"
         },
         {
           "type": "SYMBOL",
@@ -2368,6 +2368,39 @@
           }
         },
         {
+          "type": "PREC_RIGHT",
+          "value": 12,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "left",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_term"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "op",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "family_minus"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "right",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_term"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "PREC_LEFT",
           "value": 10,
           "content": {
@@ -2666,7 +2699,7 @@
         }
       ]
     },
-    "_constant": {
+    "constant": {
       "type": "CHOICE",
       "members": [
         {
@@ -2774,6 +2807,10 @@
         {
           "type": "SYMBOL",
           "name": "family_times"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "family_minus"
         },
         {
           "type": "SYMBOL",

@@ -84,13 +84,13 @@
 
 ;; Identifiers
 ((name (ucname)) @variable (#is-not? local))
-((name ([uname freshuv])) @wildcard (#is-not? local))
-((name ([lcname qname bqname])) @constant (#is-not? local))
+((name [(uname) (freshuv)]) @wildcard (#is-not? local))
+((name [(lcname) (qname) (bqname)]) @constant (#is-not? local))
 ((name (atname)) @macro (#is-not? local))
 
 ;; Literal constants
 (string) @string
-[integer float] @number
+[(integer) (float)] @number
 
 ;; Operators
 (vdash) @operator
@@ -130,3 +130,7 @@
 ;; Modes
 (io) @mode
 (io_colon) @mode
+
+;; Bound variables
+(abs_term (name) @parameter (bind))
+(multi_bind (name) @parameter (bind))

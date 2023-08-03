@@ -10,14 +10,18 @@
         "type": "git",
         "url": "git+https://github.com/dom-verity/tree-sitter-elpi.git"
     },
-    "tree-sitter": {
-        "scope": "source.elpi",
-        "file-types": [
-            "elpi",
-            "mod",
-            "sig"
-        ]
-    },
+    "tree-sitter": [
+        {
+            "scope": "source.elpi",
+            "file-types": [
+                "elpi",
+                "mod",
+                "sig"
+            ],
+            "highlights": "queries/highlights.scm",
+            "locals": "queries/locals.scm"
+        }
+    ],
     "keywords": [
         "Parser",
         "ELPI",
@@ -29,7 +33,7 @@
     "bugs": {
         "url": "https://github.com/dom-verity/tree-sitter-elpi/issues"
     },
-    "homepage": "https://github.com/dom-verity/tree-sitter-elpi#readme",
+    "homepage": "https://github.com/dom-verity/tree-sitter-elpi",
     "dependencies": {
         "nan": "^2.17.0"
     }

@@ -336,7 +336,7 @@ module.exports = grammar({
             $.list_term,
             $.spilled_term,
             $.cut, $.pi, $.sigma,
-            $._constant,
+            $.name,
             $.integer,
             $.float,
             $.string,
@@ -362,9 +362,9 @@ module.exports = grammar({
                 // non-associative
                 "as", "qdash", "vdash", "eq", "eq2", "is",
                 // Extensible infix operator families
-                "family_plus", "family_times", "family_exp",
-                "family_eq", "family_and", "family_or",
-                "family_sharp",
+                "family_plus", "family_times", "family_minus",
+                "family_exp", "family_eq", "family_and",
+                "family_or", "family_sharp",
                 // non-associative
                 "family_lt", "family_gt", "family_tick",
                 "family_btick"
@@ -374,7 +374,9 @@ module.exports = grammar({
                 (op) => infix_rule($, op, $._term, $._term)));
         },
 
-        _constant: $ => choice(
+        // Should the following be used in place of the plain
+        // $.name token?
+        constant: $ => choice(
             $.name,
             seq($.lparen, $._mixfix_symb, $.lparen)
         ),
@@ -384,10 +386,10 @@ module.exports = grammar({
                 "cons", "eq", "minus", "minusr", "minusi", "minuss",
                 "eq2", "or", "is", "mod", "div", "arrow", "darrow",
                 "qdash", "slash", "conj2", "conj", "vdash",
-                "family_plus", "family_times", "family_exp", "family_lt",
-                "family_gt", "family_eq", "family_and", "family_or",
-                "family_sharp", "family_btick", "family_tick", "as",
-                "family_tilde", "family_qmark"
+                "family_plus", "family_times", "family_minus",
+                "family_exp", "family_lt", "family_gt", "family_eq",
+                "family_and", "family_or", "family_sharp", "family_btick",
+                "family_tick", "as", "family_tilde", "family_qmark"
             ];
 
             return choice(...table.map((op) => $[op]));
