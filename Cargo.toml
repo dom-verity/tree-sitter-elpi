@@ -1,3 +1,17 @@
+# This file is part of tree-sitter-elpi.
+#
+# tree-sitter-elpi is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# tree-sitter-elpi is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# tree-sitter-elpi. If not, see <https://www.gnu.org/licenses/>.
 [package]
 name = "tree-sitter-elpi"
 description = "ELPI grammar for the tree-sitter parsing library"
@@ -6,7 +20,7 @@ keywords = ["incremental", "parsing", "ELPI"]
 categories = ["parsing", "text-editors"]
 repository = "https://github.com/tree-sitter/tree-sitter-elpi"
 edition = "2018"
-license = "MIT"
+license = "GPL v3"
 
 build = "bindings/rust/build.rs"
 include = [
