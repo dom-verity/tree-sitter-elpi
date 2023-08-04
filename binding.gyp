@@ -1,7 +1,7 @@
 {
   "targets": [
     {
-      "target_name": "tree_sitter_ELPI_binding",
+      "target_name": "tree_sitter_elpi_binding",
       "include_dirs": [
         "<!(node -e \"require('nan')\")",
         "src"

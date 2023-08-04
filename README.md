@@ -1,4 +1,4 @@
-# tree-sitter-ELPI
+# tree-sitter-elpi
 
 | Description:     | Tree sitter grammar for the [ELPI](https://github.com/LPCIC/elpi) dialect of [λProlog](https://www.lix.polytechnique.fr/~dale/lProlog/). |
 |:-----------------|:-----------------------------------------------------------------------------------------------------------------------------------------|

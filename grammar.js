@@ -107,7 +107,7 @@ function sep_list(s, r) {
 }
 
 module.exports = grammar({
-    name: 'ELPI',
+    name: 'elpi',
 
     externals: $ => [$.skip_comment, $.eof],
 
