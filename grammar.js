@@ -404,7 +404,7 @@ module.exports = grammar({
                 "qdash", "slash", "conj2", "conj", "vdash",
                 "family_plus", "family_times", "family_minus",
                 "family_exp", "family_lt", "family_gt", "family_eq",
-                "family_and", "family_or", "family_sharp", "family    _btick",
+                "family_and", "family_or", "family_sharp", "family_btick",
                 "family_tick", "as", "family_tilde", "family_qmark"
             ];
 

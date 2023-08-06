@@ -290,7 +290,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "ignored_decl"
+          "name": "_ignored_decl"
         },
         {
           "type": "SYMBOL",
@@ -1199,7 +1199,7 @@
         }
       ]
     },
-    "ignored_decl": {
+    "_ignored_decl": {
       "type": "CHOICE",
       "members": [
         {
@@ -2739,7 +2739,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_mixfix_symb"
+              "name": "mixfix_symb"
             },
             {
               "type": "SYMBOL",
@@ -2749,7 +2749,7 @@
         }
       ]
     },
-    "_mixfix_symb": {
+    "mixfix_symb": {
       "type": "CHOICE",
       "members": [
         {

@@ -150,8 +150,8 @@ Fontify the range associated with NODE accordingly."
    ;; :feature 'variable-bound
    :language 'elpi
    :override t
-   :feature constant
-   '(constant (mixfix_symb) @font-lock-constant-font)
+   :feature 'constant
+   '((constant (mixfix_symb) @font-lock-constant-font))
    ;; Non-overriding rules
    :language 'elpi
    :override nil

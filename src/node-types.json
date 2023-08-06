@@ -691,14 +691,6 @@
       "required": true,
       "types": [
         {
-          "type": "arrow",
-          "named": true
-        },
-        {
-          "type": "as",
-          "named": true
-        },
-        {
           "type": "atname",
           "named": true
         },
@@ -707,95 +699,7 @@
           "named": true
         },
         {
-          "type": "conj",
-          "named": true
-        },
-        {
-          "type": "conj2",
-          "named": true
-        },
-        {
-          "type": "cons",
-          "named": true
-        },
-        {
-          "type": "darrow",
-          "named": true
-        },
-        {
-          "type": "div",
-          "named": true
-        },
-        {
-          "type": "eq",
-          "named": true
-        },
-        {
-          "type": "eq2",
-          "named": true
-        },
-        {
-          "type": "family_and",
-          "named": true
-        },
-        {
-          "type": "family_btick",
-          "named": true
-        },
-        {
-          "type": "family_eq",
-          "named": true
-        },
-        {
-          "type": "family_exp",
-          "named": true
-        },
-        {
-          "type": "family_gt",
-          "named": true
-        },
-        {
-          "type": "family_lt",
-          "named": true
-        },
-        {
-          "type": "family_minus",
-          "named": true
-        },
-        {
-          "type": "family_or",
-          "named": true
-        },
-        {
-          "type": "family_plus",
-          "named": true
-        },
-        {
-          "type": "family_qmark",
-          "named": true
-        },
-        {
-          "type": "family_sharp",
-          "named": true
-        },
-        {
-          "type": "family_tick",
-          "named": true
-        },
-        {
-          "type": "family_tilde",
-          "named": true
-        },
-        {
-          "type": "family_times",
-          "named": true
-        },
-        {
           "type": "freshuv",
-          "named": true
-        },
-        {
-          "type": "is",
           "named": true
         },
         {
@@ -807,39 +711,11 @@
           "named": true
         },
         {
-          "type": "minus",
-          "named": true
-        },
-        {
-          "type": "minusi",
-          "named": true
-        },
-        {
-          "type": "minusr",
-          "named": true
-        },
-        {
-          "type": "minuss",
-          "named": true
-        },
-        {
-          "type": "mod",
-          "named": true
-        },
-        {
-          "type": "or",
-          "named": true
-        },
-        {
-          "type": "qdash",
+          "type": "mixfix_symb",
           "named": true
         },
         {
           "type": "qname",
-          "named": true
-        },
-        {
-          "type": "slash",
           "named": true
         },
         {
@@ -848,10 +724,6 @@
         },
         {
           "type": "uname",
-          "named": true
-        },
-        {
-          "type": "vdash",
           "named": true
         }
       ]
@@ -909,15 +781,19 @@
           "named": true
         },
         {
+          "type": "closed_decl",
+          "named": true
+        },
+        {
           "type": "constraint_section",
           "named": true
         },
         {
-          "type": "fixity_decl",
+          "type": "exportdef_decl",
           "named": true
         },
         {
-          "type": "ignored_decl",
+          "type": "fixity_decl",
           "named": true
         },
         {
@@ -929,11 +805,19 @@
           "named": true
         },
         {
+          "type": "localkind_decl",
+          "named": true
+        },
+        {
           "type": "macro_decl",
           "named": true
         },
         {
           "type": "mode_decl",
+          "named": true
+        },
+        {
+          "type": "module_decl",
           "named": true
         },
         {
@@ -953,7 +837,15 @@
           "named": true
         },
         {
+          "type": "sig_decl",
+          "named": true
+        },
+        {
           "type": "type_decl",
+          "named": true
+        },
+        {
+          "type": "useonly_decl",
           "named": true
         }
       ]
@@ -1087,41 +979,6 @@
         },
         {
           "type": "integer",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "ignored_decl",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "closed_decl",
-          "named": true
-        },
-        {
-          "type": "exportdef_decl",
-          "named": true
-        },
-        {
-          "type": "localkind_decl",
-          "named": true
-        },
-        {
-          "type": "module_decl",
-          "named": true
-        },
-        {
-          "type": "sig_decl",
-          "named": true
-        },
-        {
-          "type": "useonly_decl",
           "named": true
         }
       ]
@@ -1747,6 +1604,149 @@
         },
         {
           "type": "string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "mixfix_symb",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "arrow",
+          "named": true
+        },
+        {
+          "type": "as",
+          "named": true
+        },
+        {
+          "type": "conj",
+          "named": true
+        },
+        {
+          "type": "conj2",
+          "named": true
+        },
+        {
+          "type": "cons",
+          "named": true
+        },
+        {
+          "type": "darrow",
+          "named": true
+        },
+        {
+          "type": "div",
+          "named": true
+        },
+        {
+          "type": "eq",
+          "named": true
+        },
+        {
+          "type": "eq2",
+          "named": true
+        },
+        {
+          "type": "family_and",
+          "named": true
+        },
+        {
+          "type": "family_btick",
+          "named": true
+        },
+        {
+          "type": "family_eq",
+          "named": true
+        },
+        {
+          "type": "family_exp",
+          "named": true
+        },
+        {
+          "type": "family_gt",
+          "named": true
+        },
+        {
+          "type": "family_lt",
+          "named": true
+        },
+        {
+          "type": "family_minus",
+          "named": true
+        },
+        {
+          "type": "family_or",
+          "named": true
+        },
+        {
+          "type": "family_plus",
+          "named": true
+        },
+        {
+          "type": "family_qmark",
+          "named": true
+        },
+        {
+          "type": "family_sharp",
+          "named": true
+        },
+        {
+          "type": "family_tick",
+          "named": true
+        },
+        {
+          "type": "family_tilde",
+          "named": true
+        },
+        {
+          "type": "family_times",
+          "named": true
+        },
+        {
+          "type": "is",
+          "named": true
+        },
+        {
+          "type": "minus",
+          "named": true
+        },
+        {
+          "type": "minusi",
+          "named": true
+        },
+        {
+          "type": "minusr",
+          "named": true
+        },
+        {
+          "type": "minuss",
+          "named": true
+        },
+        {
+          "type": "mod",
+          "named": true
+        },
+        {
+          "type": "or",
+          "named": true
+        },
+        {
+          "type": "qdash",
+          "named": true
+        },
+        {
+          "type": "slash",
+          "named": true
+        },
+        {
+          "type": "vdash",
           "named": true
         }
       ]
