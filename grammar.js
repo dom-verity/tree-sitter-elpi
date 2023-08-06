@@ -6,6 +6,7 @@
  *
  * Original Author: Dominic Verity (dominic.verity@anu.edu.au)
  * License:         GPL v3
+ * Created:         August 2023
  *
  * Funding:         Partly funded under US Army ITC-IPAC R&D Project
  *                  contract FA520923C0004.
@@ -28,8 +29,6 @@
  * You should have received a copy of the GNU General Public License along with
  * tree-sitter-elpi. If not, see <https://www.gnu.org/licenses/>.
  */
-
-const out = process.stdout.write.bind(process.stdout);
 
 const ucase = /[A-Z]/;
 const lcase = /[a-z]/;
@@ -154,7 +153,7 @@ module.exports = grammar({
             $.pred_decl,
             $.clause_decl,
             $.macro_decl,
-            $.ignored_decl,
+            $._ignored_decl,
             $.namespace_section,
             $.program_section,
             $.constraint_section,
@@ -294,7 +293,7 @@ module.exports = grammar({
         ),
 
         // Teyjus declarations which are ignored in ELPI
-        ignored_decl: $ => choice(
+        _ignored_decl: $ => choice(
             $.module_decl,
             $.sig_decl,
             $.exportdef_decl,
@@ -395,17 +394,17 @@ module.exports = grammar({
         constant: $ => choice(
             $.ucname, $.lcname, $.uname, $.qname,
             $.bqname, $.atname, $.freshuv,
-            seq($.lparen, $._mixfix_symb, $.lparen)
+            seq($.lparen, $.mixfix_symb, $.lparen)
         ),
 
-        _mixfix_symb: $ => {
+        mixfix_symb: $ => {
             const table = [
                 "cons", "eq", "minus", "minusr", "minusi", "minuss",
                 "eq2", "or", "is", "mod", "div", "arrow", "darrow",
                 "qdash", "slash", "conj2", "conj", "vdash",
                 "family_plus", "family_times", "family_minus",
                 "family_exp", "family_lt", "family_gt", "family_eq",
-                "family_and", "family_or", "family_sharp", "family_btick",
+                "family_and", "family_or", "family_sharp", "family    _btick",
                 "family_tick", "as", "family_tilde", "family_qmark"
             ];
 

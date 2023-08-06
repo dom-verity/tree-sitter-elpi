@@ -131,3 +131,5 @@ dist
 
 # extras
 test/corpus_old
+*.elc
+
