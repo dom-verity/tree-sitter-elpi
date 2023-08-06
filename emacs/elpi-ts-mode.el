@@ -71,6 +71,8 @@
     (modify-syntax-entry ?& "w" table)
     (modify-syntax-entry ?! "w" table)
     (modify-syntax-entry ?$ "w" table)
+    (modify-syntax-entry ?` "w" table)
+    (modify-syntax-entry ?' "w" table)
 
     (modify-syntax-entry ?\( "()" table)
     (modify-syntax-entry ?\) ")(" table)
@@ -79,8 +81,6 @@
     (modify-syntax-entry ?{ "(}" table)
     (modify-syntax-entry ?} "){" table)
 
-    (modify-syntax-entry ?` "\"" table)     ;; should be "w" inside a constant
-    (modify-syntax-entry ?' "\"" table)     ;; should be "w" inside a constant
     (modify-syntax-entry ?\" "\"" table)
 
     (modify-syntax-entry ?| "." table)
@@ -151,7 +151,9 @@ Fontify the range associated with NODE accordingly."
    :language 'elpi
    :override t
    :feature 'constant
-   '((constant (mixfix_symb) @font-lock-constant-font))
+   `((constant ,(cl-map 'vector #'(lambda (x) `(,x)) elpi-ts-mode--operators)
+               @font-lock-operator-face))
+
    ;; Non-overriding rules
    :language 'elpi
    :override nil

@@ -390,27 +390,6 @@ module.exports = grammar({
                 (op) => infix_rule($, op, $._term, $._term)));
         },
 
-        // We don't restrict the use of names anywhere in the grammar.
-        constant: $ => choice(
-            $.ucname, $.lcname, $.uname, $.qname,
-            $.bqname, $.atname, $.freshuv,
-            seq($.lparen, $.mixfix_symb, $.lparen)
-        ),
-
-        mixfix_symb: $ => {
-            const table = [
-                "cons", "eq", "minus", "minusr", "minusi", "minuss",
-                "eq2", "or", "is", "mod", "div", "arrow", "darrow",
-                "qdash", "slash", "conj2", "conj", "vdash",
-                "family_plus", "family_times", "family_minus",
-                "family_exp", "family_lt", "family_gt", "family_eq",
-                "family_and", "family_or", "family_sharp", "family_btick",
-                "family_tick", "as", "family_tilde", "family_qmark"
-            ];
-
-            return choice(...table.map((op) => $[op]));
-        },
-
         prefix_term: $ => prefix_rule($, "family_tilde", $._term),
 
         postfix_term: $ => postfix_rule($, "family_qmark", $._term),
@@ -514,17 +493,34 @@ module.exports = grammar({
         io_colon: $ => token(/(i|o):/),
 
         // Names
-        // id: $ => choice($.lcname, $.qname, $.bqname),
-        // abstoken: $ => choice($.ucname, $.lcname, $.qname, $.bqname),
-        // vident: $ => choice($.ucname, $.uname, $.freshuv),
+        ucname: $ => token(seq(ucase, repeat(idchar))),
+        lcname: $ => token(seq(lcase, repeat(idchar))),
+        uname: $ => token(seq('_', repeat1(idchar))),
+        qname: $ => token(seq('\'',  repeat(symbchar), '\'')),
+        bqname: $ => token(seq('`', repeat(symbchar), '`')),
+        atname: $ => token(seq('@', repeat(idchar))),
+        freshuv: $ => token('_'),
 
-        ucname: $ => token(seq(ucase, repeat(idchar))),        // bound or free variable
-        lcname: $ => token(seq(lcase, repeat(idchar))),        // bound variable or constant
-        uname: $ => token(seq('_', repeat1(idchar))),          // wildcard
-        qname: $ => token(seq('\'', repeat(symbchar), '\'')),  // bound variable or constant
-        bqname: $ => token(seq('`', repeat(symbchar), '`')),   // bound variable or constant
-        atname: $ => token(seq('@', repeat(idchar))),          // macro name
-        freshuv: $ => token('_'),                              // anonymous wildcard
+        _mixfix: $ => {
+            const table = [
+                "cons", "eq", "minus", "minusr", "minusi", "minuss",
+                "eq2", "or", "is", "mod", "div", "arrow", "darrow",
+                "qdash", "slash", "conj2", "conj", "vdash",
+                "family_plus", "family_times", "family_minus",
+                "family_exp", "family_lt", "family_gt", "family_eq",
+                "family_and", "family_or", "family_sharp", "family_btick",
+                "family_tick", "as", "family_tilde", "family_qmark"
+            ];
+
+            return choice(...table.map((op) => $[op]));
+        },
+
+        constant: $ => choice(
+            field("id",
+                  choice($.ucname, $.lcname, $.uname, $.atname,
+                         $.qname, $.bqname, $.freshuv)),
+            seq($.lparen, field("id", $._mixfix), $.rparen)
+        ),
 
         full_stop: $ => token('.'),
         _terminator: $ => choice($.full_stop, $.eof),
@@ -535,6 +531,8 @@ module.exports = grammar({
         rbracket: $ => token("]"),
         lcurly: $ => token("{"),
         rcurly: $ => token("}"),
+        tick: $ => token("\'"),
+        btick: $ => token("`"),
         pipe: $ => token("|"),
 
         bind: $ => token('\\'),

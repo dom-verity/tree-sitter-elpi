@@ -2699,193 +2699,6 @@
         }
       ]
     },
-    "constant": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "ucname"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "lcname"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "uname"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "qname"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "bqname"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "atname"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "freshuv"
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "lparen"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "mixfix_symb"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "lparen"
-            }
-          ]
-        }
-      ]
-    },
-    "mixfix_symb": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "cons"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "eq"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "minus"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "minusr"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "minusi"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "minuss"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "eq2"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "or"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "is"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "mod"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "div"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "arrow"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "darrow"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "qdash"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "slash"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "conj2"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "conj"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "vdash"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "family_plus"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "family_times"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "family_minus"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "family_exp"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "family_lt"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "family_gt"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "family_eq"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "family_and"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "family_or"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "family_sharp"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "family_btick"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "family_tick"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "as"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "family_tilde"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "family_qmark"
-        }
-      ]
-    },
     "prefix_term": {
       "type": "PREC",
       "value": 18,
@@ -3769,6 +3582,206 @@
         "value": "_"
       }
     },
+    "_mixfix": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "cons"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eq"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "minus"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "minusr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "minusi"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "minuss"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eq2"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "or"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "is"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "mod"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "div"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "arrow"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "darrow"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "qdash"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "slash"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "conj2"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "conj"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "vdash"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "family_plus"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "family_times"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "family_minus"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "family_exp"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "family_lt"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "family_gt"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "family_eq"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "family_and"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "family_or"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "family_sharp"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "family_btick"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "family_tick"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "as"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "family_tilde"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "family_qmark"
+        }
+      ]
+    },
+    "constant": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "id",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "ucname"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "lcname"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "uname"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "atname"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "qname"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "bqname"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "freshuv"
+              }
+            ]
+          }
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "lparen"
+            },
+            {
+              "type": "FIELD",
+              "name": "id",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_mixfix"
+              }
+            },
+            {
+              "type": "SYMBOL",
+              "name": "rparen"
+            }
+          ]
+        }
+      ]
+    },
     "full_stop": {
       "type": "TOKEN",
       "content": {
@@ -3836,6 +3849,20 @@
       "content": {
         "type": "STRING",
         "value": "}"
+      }
+    },
+    "tick": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "'"
+      }
+    },
+    "btick": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "`"
       }
     },
     "pipe": {
