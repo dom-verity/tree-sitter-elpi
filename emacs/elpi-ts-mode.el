@@ -119,14 +119,48 @@
     family_sharp family_tilde)
   "ELPI operator nodes for tree-sitter font locking.")
 
-(defun elpi-ts-mode--get-constant-name (node)
-  "Extract and return the text of a constant NODE."
-  )
-
-(defun elpi-ts-mode--fontify-bound-variable (node &rest _)
+(defun elpi-ts-mode--find-binding (node &rest _)
   "Search up from a constant NODE to determine whether it is bound by a lambda.
-Fontify the range associated with NODE accordingly."
-  )
+Returns the parameter of the lambda abstraction that binds the given variable,
+or nil otherwise."
+  (when (equal (treesit-node-type node) "constant")
+    (let ((name (treesit-node-text
+                 (treesit-node-child-by-field-name
+                  node "id")))
+          (parent (treesit-node-parent node))
+          (param nil))
+      (cl-flet*
+          ((has-same-name-as-node (other)
+             (when (equal
+                    (treesit-node-text
+                     (treesit-node-child-by-field-name other "id"))
+                    name)
+               other))
+           (find-param (ancestor)
+             (cond
+              ((equal (treesit-node-type ancestor) "abs_term")
+               (has-same-name-as-node
+                (treesit-node-child-by-field-name ancestor "left")))
+              ((equal (treesit-node-type ancestor) "multi_bind")
+               (seq-some
+                #'has-same-name-as-node
+                (reverse
+                 (treesit-node-children
+                  (treesit-node-child-by-field-name ancestor "left")
+                  t)))))))
+        (while (and parent (not (setq param (find-param parent))))
+          (setq parent (treesit-node-parent parent)))
+        param))))
+
+(defun elpi-ts-mode--fontify-bound-variable (node override start end &rest _)
+  "Apply face to NODE when it is a variable bound in a surrounding lambda.
+OVERRIDE is the face override option of the calling font lock rule.
+START and END specify the region to be fontified."
+  (when (elpi-ts-mode--find-binding node)
+    (treesit-fontify-with-override (treesit-node-start node)
+                                   (treesit-node-end node)
+                                   font-lock-warning-face
+                                   override start end)))
 
 (defvar elpi-ts-mode--font-lock-settings
   (treesit-font-lock-rules
@@ -142,17 +176,15 @@ Fontify the range associated with NODE accordingly."
    '([(escape_sequence) (quote_escape)] @font-lock-escape-face)
    :language 'elpi
    :override t
-   :feature 'lambda-binding
+   :feature 'variable-bound
    '((abs_term left: (constant (_) @font-lock-variable-name-face))
-     (multi_bind (params (constant (_) @font-lock-variable-name-face))))
-   ;; :language 'elpi
-   ;; :override t
-   ;; :feature 'variable-bound
+     (multi_bind (params (constant (_) @font-lock-variable-name-face)))
+     (constant) @elpi-ts-mode--fontify-bound-variable)
    :language 'elpi
    :override t
    :feature 'constant
    `((constant ,(cl-map 'vector #'(lambda (x) `(,x)) elpi-ts-mode--operators)
-               @font-lock-operator-face))
+               @font-lock-constant-face))
 
    ;; Non-overriding rules
    :language 'elpi
@@ -227,7 +259,7 @@ Fontify the range associated with NODE accordingly."
    :language 'elpi
    :override nil
    :feature 'constant
-   '((lcname) @font-lock-constant-face)
+   '([(lcname) (qname) (bqname)] @font-lock-constant-face)
    :language 'elpi
    :override nil
    :feature 'macro
@@ -253,7 +285,7 @@ Fontify the range associated with NODE accordingly."
                  punctuation-delimiter)
                 (punctuation-bracket keyword disabled operator attribute
                  operator-builtin label constant-builtin type-builtin)
-                (variable wildcard constant macro lambda-binding)))
+                (variable wildcard constant macro variable-bound)))
 
   (treesit-major-mode-setup))
 
