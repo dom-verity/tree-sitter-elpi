@@ -93,18 +93,97 @@
     table)
   "Syntax table for `elpi-ts-mode`.")
 
+;;; Customize group
+(defgroup elpi '() "ELPI an implementation of λProlog."
+  :group 'languages)
+
 ;;; Faces
+(defgroup elpi-faces '() "Faces for font lock colouring of ELPI code."
+  :group 'elpi)
+
+(defface elpi-comment-face
+  '((t . (:inherit font-lock-comment-face)))
+  "Face for comments in ELPI mode.")
+(defface elpi-disabled-face
+  '((t . (:inherit font-lock-comment-face)))
+  "Face for disabled Teyjus declarations in ELPI mode.")
+(defface elpi-escape-face
+  '((t . (:inherit font-lock-escape-face)))
+  "Face for escape sequences in ELPI mode.")
+(defface elpi-applied-occurrence-face
+  '((t . (:inherit font-lock-variable-name-face)))
+  "Face for applied occurrences of parameters in ELPI mode.")
+(defface elpi-defining-occurrence-face
+  '((t . (:inherit font-lock-variable-name-face)))
+  "Face for defining occurrences of parameters in ELPI mode.")
+(defface elpi-constant-face
+  '((t . (:inherit font-lock-constant-face)))
+  "Face for constant identifiers in ELPI mode.")
+(defface elpi-clause-head-face
+  '((t . (:inherit font-lock-function-name-face)))
+  "Face for head identifiers of clauses in ELPI mode.")
+(defface elpi-keyword-face
+  '((t . (:inherit font-lock-keyword-face)))
+  "Face for keywords in ELPI mode.")
+(defface elpi-attributes-face
+  '((t . (:inherit font-lock-attribute-face)))
+  "Face for attributes in ELPI mode.")
+(defface elpi-operator-face
+  '((t . (:inherit font-lock-operator-face)))
+  "Face for operators in ELPI mode.")
+(defface elpi-punctuation-bracket-face
+  '((t . (:inherit font-lock-bracket-face)))
+  "Face for brackets in ELPI mode.")
+(defface elpi-number-face
+  '((t . (:inherit font-lock-number-face)))
+  "Face for literal numbers in ELPI mode.")
+(defface elpi-string-delimiter-face
+  '((t . (:inherit font-lock-bracket-face)))
+  "Face for string delimiters in ELPI mode.")
+(defface elpi-string-content-face
+  '((t . (:inherit font-lock-string-face)))
+  "Face for string content in ELPI mode.")
+(defface elpi-punctuation-delimiter-face
+  '((t . (:inherit font-lock-delimiter-face)))
+  "Face for delimiters in ELPI mode.")
+(defface elpi-mode-label-face
+  '((t . (:inherit font-lock-property-use-face)))
+  "Face for IO mode labels in ELPI mode.")
+(defface elpi-operator-builtin-face
+  '((t . (:inherit font-lock-misc-punctuation-face)))
+  "Face for built in operators in ELPI mode.")
+(defface elpi-constant-builtin-face
+  '((t . (:inherit font-lock-builtin-face)))
+  "Face for built in constants in ELPI mode.")
+(defface elpi-kind-builtin-face
+  '((t . (:inherit font-lock-type-face)))
+  "Face for built in kinds in ELPI mode.")
+(defface elpi-type-face
+  '((t . (:inherit font-lock-type-face)))
+  "Face for types in ELPI mode.")
+(defface elpi-variable-face
+  '((t . (:inherit font-lock-variable-use-face)))
+  "Face for logic (instantiable) variables in ELPI mode.")
+(defface elpi-wildcard-face
+  '((t . (:inherit font-lock-negation-char-face)))
+  "Face for wildcards in ELPI mode.")
+(defface elpi-constant-face
+  '((t . (:inherit font-lock-constant-face)))
+  "Face for constants in ELPI mode.")
+(defface elpi-macro-face
+  '((t . (:inherit font-lock-preprocessor-face)))
+  "Face for macros in ELPI mode.")
 
 ;;; Keyword and operator lists
 
 (defvar elpi-ts-mode--keywords
   '(kind type typeabbrev shorten accumulate import accum_sig
-    use_sig local mode pred macro rule namespace constraint)
+         use_sig local mode pred macro rule namespace constraint)
   "ELPI keyword nodes for tree-sitter font locking.")
 
 (defvar elpi-ts-mode--disabled
   '(module_decl sig_decl exportdef_decl localkind_decl
-    useonly_decl closed_decl)
+                useonly_decl closed_decl)
   "ELPI disabled declaration nodes for tree-sitter font locking.")
 
 (defvar elpi-ts-mode--attributes
@@ -113,10 +192,10 @@
 
 (defvar elpi-ts-mode--operators
   '(vdash qdash or conj conj2 arrow darrow eq eq2 family_lt
-    family_gt cons family_tick family_exp family_plus
-    minus minusr minusi minuss family_times slash div
-    mod family_minus family_btick family_eq family_and
-    family_sharp family_tilde)
+          family_gt cons family_tick family_exp family_plus
+          minus minusr minusi minuss family_times slash div
+          mod family_minus family_btick family_eq family_and
+          family_sharp family_tilde)
   "ELPI operator nodes for tree-sitter font locking.")
 
 (defun elpi-ts-mode--find-binding (node &rest _)
@@ -159,7 +238,19 @@ START and END specify the region to be fontified."
   (when (elpi-ts-mode--find-binding node)
     (treesit-fontify-with-override (treesit-node-start node)
                                    (treesit-node-end node)
-                                   font-lock-warning-face
+                                   'elpi-applied-occurrence-face
+                                   override start end)))
+
+(defun elpi-ts-mode--fontify-clause-head (node override start end &rest _)
+  "Fontify the head of a clause, by traversing its spine from NODE.
+OVERRIDE is the face override option of the calling font lock rule.
+START and END specify the region to be fontified."
+  (while (equal (treesit-node-type node) "app_term")
+    (setq node (treesit-node-child-by-field-name node "left")))
+  (when (equal (treesit-node-type node) "constant")
+    (treesit-fontify-with-override (treesit-node-start node)
+                                   (treesit-node-end node)
+                                   'elpi-clause-head-face
                                    override start end)))
 
 (defvar elpi-ts-mode--font-lock-settings
@@ -168,102 +259,111 @@ START and END specify the region to be fontified."
    :language 'elpi
    :override t
    :feature 'comment
-   '([(line_comment) (block_comment) (skip_comment)]
-     @font-lock-comment-face)
+   '([(line_comment) (block_comment) (skip_comment)] @elpi-comment-face)
    :language 'elpi
    :override t
    :feature 'escape
-   '([(escape_sequence) (quote_escape)] @font-lock-escape-face)
+   '([(escape_sequence) (quote_escape)] @elpi-escape-face)
    :language 'elpi
    :override t
-   :feature 'variable-bound
-   '((abs_term left: (constant (_) @font-lock-variable-name-face))
-     (multi_bind (params (constant (_) @font-lock-variable-name-face)))
+   :feature 'lambda-parameter
+   '((abs_term left: (constant (_) @elpi-defining-occurrence-face))
+     (multi_bind (params (constant (_) @elpi-defining-occurrence-face)))
      (constant) @elpi-ts-mode--fontify-bound-variable)
    :language 'elpi
    :override t
    :feature 'constant
    `((constant ,(cl-map 'vector #'(lambda (x) `(,x)) elpi-ts-mode--operators)
-               @font-lock-constant-face))
+               @elpi-constant-face))
+   :language 'elpi
+   :override t
+   :feature 'clause-head
+   '((clause_decl
+      (infix_term
+       left: ([(app_term) @elpi-ts-mode--fontify-clause-head
+               (constant) @elpi-clause-head-face])
+       op: (vdash)))
+     (clause_decl[(app_term) @elpi-ts-mode--fontify-clause-head
+                  (constant) @elpi-clause-head-face])
+     (pred_decl (constant) @elpi-clause-head-face)
+     (mode_decl (constant) @elpi-clause-head-face))
 
    ;; Non-overriding rules
    :language 'elpi
    :override nil
    :feature 'keyword
    `(,(cl-map 'vector #'(lambda (x) `(,x)) elpi-ts-mode--keywords)
-     @font-lock-keyword-face)
+     @elpi-keyword-face)
    :language 'elpi
    :override nil
    :feature 'disabled
    `(,(cl-map 'vector #'(lambda (x) `(,x)) elpi-ts-mode--disabled)
-     @font-lock-comment-face)
+     @elpi-disabled-face)
    :language 'elpi
    :override nil
    :feature 'attribute
    `(,(cl-map 'vector #'(lambda (x) `(,x)) elpi-ts-mode--attributes)
-     @font-lock-attribute-face)
+     @elpi-attributes-face)
    :language 'elpi
    :override nil
    :feature 'operator
    `(,(cl-map 'vector #'(lambda (x) `(,x)) elpi-ts-mode--operators)
-     @font-lock-operator-face)
+     @elpi-operator-face)
    :language 'elpi
    :override nil
    :feature 'punctuation-bracket
    `([(lparen) (rparen) (lcurly) (rcurly) (lbracket) (rbracket)]
-     @font-lock-bracket-face)
+     @elpi-punctuation-bracket-face)
    :language 'elpi
    :override nil
    :feature 'number
-   '([(integer) (float)] @font-lock-number-face)
+   '([(integer) (float)] @elpi-number-face)
    :language 'elpi
    :override nil
    :feature 'string-delimiter
-   '((string ("\"") @font-lock-bracket-face))
+   '((string ("\"") @elpi-string-delimiter-face))
    :language 'elpi
    :override nil
    :feature 'string-content
-   '((string_content) @font-lock-string-face)
+   '((string_content) @elpi-string-content-face)
    :language 'elpi
    :override nil
    :feature 'punctuation-delimiter
    '([(comma) (pipe) (bind) (iff) (full_stop)]
-     @font-lock-delimiter-face)
+     @elpi-punctuation-delimiter-face)
    :language 'elpi
    :override nil
    :feature 'label
-   '([(io) (io_colon)] @font-lock-property-use-face)
+   '([(io) (io_colon)] @elpi-mode-label-face)
    :language 'elpi
    :override nil
    :feature 'operator-builtin
-   '([(is) (as)] @font-lock-misc-punctuation-face)
+   '([(is) (as)] @elpi-operator-builtin-face)
    :language 'elpi
    :override nil
    :feature 'constant-builtin
-   '([(pi) (sigma) (cut)] @font-lock-builtin-face)
+   '([(pi) (sigma) (cut)] @elpi-constant-builtin-face)
    :language 'elpi
    :override nil
    :feature 'type-builtin
-   '([(typeid)] @font-lock-type-face)
+   '([(typeid)] @elpi-kind-builtin-face)
    ;; Variables, wildcards, constants and macros.
-   ;; haven't yet worked out what to do with constants of the
-   ;; form `<name>` and \'<name>\'.
    :language 'elpi
    :override nil
    :feature 'variable
-   '((ucname) @font-lock-variable-use-face)
+   '((ucname) @elpi-variable-face)
    :language 'elpi
    :override nil
    :feature 'wildcard
-   '([(uname) (freshuv)] @font-lock-negation-char-face)
+   '([(uname) (freshuv)] @elpi-wildcard-face)
    :language 'elpi
    :override nil
    :feature 'constant
-   '([(lcname) (qname) (bqname)] @font-lock-constant-face)
+   '([(lcname) (qname) (bqname)] @elpi-constant-face)
    :language 'elpi
    :override nil
    :feature 'macro
-   '((atname) @font-lock-preprocessor-face)
+   '((atname) @elpi-macro-face)
    )
   "Tree-sitter font-lock settings for `elpi-ts-mode'.")
 
@@ -282,10 +382,11 @@ START and END specify the region to be fontified."
   (setq-local treesit-font-lock-settings elpi-ts-mode--font-lock-settings)
   (setq-local treesit-font-lock-feature-list
               '((comment number string-content string-delimiter escape
-                 punctuation-delimiter)
+                         punctuation-delimiter)
                 (punctuation-bracket keyword disabled operator attribute
-                 operator-builtin label constant-builtin type-builtin)
-                (variable wildcard constant macro variable-bound)))
+                                     operator-builtin label constant-builtin type-builtin)
+                (variable wildcard constant macro lambda-parameter
+                          clause-head)))
 
   (treesit-major-mode-setup))
 

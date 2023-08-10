@@ -5,7 +5,7 @@
       "type": "REPEAT",
       "content": {
         "type": "SYMBOL",
-        "name": "decl"
+        "name": "_decl"
       }
     },
     "word": {
@@ -253,7 +253,7 @@
         ]
       }
     },
-    "decl": {
+    "_decl": {
       "type": "CHOICE",
       "members": [
         {
@@ -994,7 +994,7 @@
           "type": "REPEAT",
           "content": {
             "type": "SYMBOL",
-            "name": "decl"
+            "name": "_decl"
           }
         },
         {
@@ -1017,7 +1017,7 @@
             "type": "REPEAT",
             "content": {
               "type": "SYMBOL",
-              "name": "decl"
+              "name": "_decl"
             }
           },
           {

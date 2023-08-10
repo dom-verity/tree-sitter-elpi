@@ -900,97 +900,6 @@
     }
   },
   {
-    "type": "decl",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "abbrev_decl",
-          "named": true
-        },
-        {
-          "type": "accumulate_decl",
-          "named": true
-        },
-        {
-          "type": "clause_decl",
-          "named": true
-        },
-        {
-          "type": "closed_decl",
-          "named": true
-        },
-        {
-          "type": "constraint_section",
-          "named": true
-        },
-        {
-          "type": "exportdef_decl",
-          "named": true
-        },
-        {
-          "type": "fixity_decl",
-          "named": true
-        },
-        {
-          "type": "kind_decl",
-          "named": true
-        },
-        {
-          "type": "local_decl",
-          "named": true
-        },
-        {
-          "type": "localkind_decl",
-          "named": true
-        },
-        {
-          "type": "macro_decl",
-          "named": true
-        },
-        {
-          "type": "mode_decl",
-          "named": true
-        },
-        {
-          "type": "module_decl",
-          "named": true
-        },
-        {
-          "type": "namespace_section",
-          "named": true
-        },
-        {
-          "type": "pred_decl",
-          "named": true
-        },
-        {
-          "type": "program_section",
-          "named": true
-        },
-        {
-          "type": "shorten_decl",
-          "named": true
-        },
-        {
-          "type": "sig_decl",
-          "named": true
-        },
-        {
-          "type": "type_decl",
-          "named": true
-        },
-        {
-          "type": "useonly_decl",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "defto",
     "named": true,
     "fields": {}
@@ -1933,11 +1842,39 @@
       "required": true,
       "types": [
         {
+          "type": "abbrev_decl",
+          "named": true
+        },
+        {
+          "type": "accumulate_decl",
+          "named": true
+        },
+        {
+          "type": "clause_decl",
+          "named": true
+        },
+        {
+          "type": "closed_decl",
+          "named": true
+        },
+        {
           "type": "constant",
           "named": true
         },
         {
-          "type": "decl",
+          "type": "constraint_section",
+          "named": true
+        },
+        {
+          "type": "exportdef_decl",
+          "named": true
+        },
+        {
+          "type": "fixity_decl",
+          "named": true
+        },
+        {
+          "type": "kind_decl",
           "named": true
         },
         {
@@ -1945,11 +1882,59 @@
           "named": true
         },
         {
+          "type": "local_decl",
+          "named": true
+        },
+        {
+          "type": "localkind_decl",
+          "named": true
+        },
+        {
+          "type": "macro_decl",
+          "named": true
+        },
+        {
+          "type": "mode_decl",
+          "named": true
+        },
+        {
+          "type": "module_decl",
+          "named": true
+        },
+        {
           "type": "namespace",
           "named": true
         },
         {
+          "type": "namespace_section",
+          "named": true
+        },
+        {
+          "type": "pred_decl",
+          "named": true
+        },
+        {
+          "type": "program_section",
+          "named": true
+        },
+        {
           "type": "rcurly",
+          "named": true
+        },
+        {
+          "type": "shorten_decl",
+          "named": true
+        },
+        {
+          "type": "sig_decl",
+          "named": true
+        },
+        {
+          "type": "type_decl",
+          "named": true
+        },
+        {
+          "type": "useonly_decl",
           "named": true
         }
       ]
@@ -2302,7 +2287,63 @@
       "required": true,
       "types": [
         {
-          "type": "decl",
+          "type": "abbrev_decl",
+          "named": true
+        },
+        {
+          "type": "accumulate_decl",
+          "named": true
+        },
+        {
+          "type": "clause_decl",
+          "named": true
+        },
+        {
+          "type": "closed_decl",
+          "named": true
+        },
+        {
+          "type": "constraint_section",
+          "named": true
+        },
+        {
+          "type": "exportdef_decl",
+          "named": true
+        },
+        {
+          "type": "fixity_decl",
+          "named": true
+        },
+        {
+          "type": "kind_decl",
+          "named": true
+        },
+        {
+          "type": "local_decl",
+          "named": true
+        },
+        {
+          "type": "localkind_decl",
+          "named": true
+        },
+        {
+          "type": "macro_decl",
+          "named": true
+        },
+        {
+          "type": "mode_decl",
+          "named": true
+        },
+        {
+          "type": "module_decl",
+          "named": true
+        },
+        {
+          "type": "namespace_section",
+          "named": true
+        },
+        {
+          "type": "pred_decl",
           "named": true
         },
         {
@@ -2311,6 +2352,26 @@
         },
         {
           "type": "prog_end",
+          "named": true
+        },
+        {
+          "type": "program_section",
+          "named": true
+        },
+        {
+          "type": "shorten_decl",
+          "named": true
+        },
+        {
+          "type": "sig_decl",
+          "named": true
+        },
+        {
+          "type": "type_decl",
+          "named": true
+        },
+        {
+          "type": "useonly_decl",
           "named": true
         }
       ]
@@ -2475,7 +2536,83 @@
       "required": false,
       "types": [
         {
-          "type": "decl",
+          "type": "abbrev_decl",
+          "named": true
+        },
+        {
+          "type": "accumulate_decl",
+          "named": true
+        },
+        {
+          "type": "clause_decl",
+          "named": true
+        },
+        {
+          "type": "closed_decl",
+          "named": true
+        },
+        {
+          "type": "constraint_section",
+          "named": true
+        },
+        {
+          "type": "exportdef_decl",
+          "named": true
+        },
+        {
+          "type": "fixity_decl",
+          "named": true
+        },
+        {
+          "type": "kind_decl",
+          "named": true
+        },
+        {
+          "type": "local_decl",
+          "named": true
+        },
+        {
+          "type": "localkind_decl",
+          "named": true
+        },
+        {
+          "type": "macro_decl",
+          "named": true
+        },
+        {
+          "type": "mode_decl",
+          "named": true
+        },
+        {
+          "type": "module_decl",
+          "named": true
+        },
+        {
+          "type": "namespace_section",
+          "named": true
+        },
+        {
+          "type": "pred_decl",
+          "named": true
+        },
+        {
+          "type": "program_section",
+          "named": true
+        },
+        {
+          "type": "shorten_decl",
+          "named": true
+        },
+        {
+          "type": "sig_decl",
+          "named": true
+        },
+        {
+          "type": "type_decl",
+          "named": true
+        },
+        {
+          "type": "useonly_decl",
           "named": true
         }
       ]

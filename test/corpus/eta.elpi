@@ -6,7 +6,7 @@ macro @ctx A :- c (_\ A). % to have depth > 0 in unif
 k1 (x\ g x).
 k2 g.
 
-%mode (foo i i).
+mode (foo i i).
 pred foo i:(X -> X), i:(X -> X -> X).
 foo X (x1 \ (x2 \ X x2)) :- (print X).
 %% Fails, but should output `y`

@@ -140,11 +140,11 @@ module.exports = grammar({
     ],
 
     rules: {
-        source_file: $ => repeat($.decl),
+        source_file: $ => repeat($._decl),
 
         word: $ => token(allnames),
 
-        decl: $ => choice(
+        _decl: $ => choice(
             $.kind_decl,
             $.type_decl,
             $.abbrev_decl,
@@ -263,12 +263,12 @@ module.exports = grammar({
 
         // Namespaces
         namespace_section: $ => seq(
-            $.namespace, $.constant, $.lcurly, repeat($.decl), $.rcurly
+            $.namespace, $.constant, $.lcurly, repeat($._decl), $.rcurly
         ),
 
         // Program
         program_section: $ => prec.dynamic(1, seq(
-            $.prog_begin, repeat($.decl), $.prog_end
+            $.prog_begin, repeat($._decl), $.prog_end
         )),
 
         // Shorten
