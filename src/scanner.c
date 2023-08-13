@@ -226,6 +226,7 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
             if (lexer->lookahead == '/') {
                 state = nonempty ? END_STATE : ERROR_STATE;
             } else {
+                nonempty = true;
                 lexer->mark_end(lexer);
                 state = 15;
             }

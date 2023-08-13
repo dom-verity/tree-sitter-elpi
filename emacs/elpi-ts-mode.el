@@ -388,8 +388,17 @@ START and END specify the region to be fontified."
 (defvar elpi-ts-mode--indent-rules
   `((elpi
      ((parent-is "source_file") column-0 0)
-     ((query (_ (prog_begin) (_) @capture (prog_end)))
+     ;; Program and namespace sections
+     ((query ((_ (prog_begin) (_) @capture (prog_end))))
       parent-bol elpi-ts-mode-indent-offset)
+     ((node-is "prog_begin") parent-bol 0)
+     ((node-is "prog_end") parent-bol 0)
+     ((n-p-gp "constant" "namespace_section" nil)
+      parent-bol elpi-ts-mode-indent-offset) ;; Review...
+     ;; Block comments
+     ((node-is "start_block_comment") parent-bol 0)
+     ((node-is "block_comment_line") parent-bol 1)
+     ((node-is "end_block_comment") parent-bol 1)
      ))
   "Tree-sitter indentation rules for `elpi-ts-mode'.")
 
