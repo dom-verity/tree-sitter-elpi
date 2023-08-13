@@ -1981,81 +1981,88 @@
   {
     "type": "paren_term",
     "named": true,
-    "fields": {},
+    "fields": {
+      "term": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "abs_term",
+            "named": true
+          },
+          {
+            "type": "app_term",
+            "named": true
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "cut",
+            "named": true
+          },
+          {
+            "type": "float",
+            "named": true
+          },
+          {
+            "type": "infix_term",
+            "named": true
+          },
+          {
+            "type": "integer",
+            "named": true
+          },
+          {
+            "type": "list_term",
+            "named": true
+          },
+          {
+            "type": "multi_bind",
+            "named": true
+          },
+          {
+            "type": "paren_term",
+            "named": true
+          },
+          {
+            "type": "pi",
+            "named": true
+          },
+          {
+            "type": "postfix_term",
+            "named": true
+          },
+          {
+            "type": "prefix_term",
+            "named": true
+          },
+          {
+            "type": "sigma",
+            "named": true
+          },
+          {
+            "type": "spilled_term",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
       "types": [
         {
-          "type": "abs_term",
-          "named": true
-        },
-        {
-          "type": "app_term",
-          "named": true
-        },
-        {
-          "type": "constant",
-          "named": true
-        },
-        {
-          "type": "cut",
-          "named": true
-        },
-        {
-          "type": "float",
-          "named": true
-        },
-        {
-          "type": "infix_term",
-          "named": true
-        },
-        {
-          "type": "integer",
-          "named": true
-        },
-        {
-          "type": "list_term",
-          "named": true
-        },
-        {
           "type": "lparen",
           "named": true
         },
         {
-          "type": "multi_bind",
-          "named": true
-        },
-        {
-          "type": "paren_term",
-          "named": true
-        },
-        {
-          "type": "pi",
-          "named": true
-        },
-        {
-          "type": "postfix_term",
-          "named": true
-        },
-        {
-          "type": "prefix_term",
-          "named": true
-        },
-        {
           "type": "rparen",
-          "named": true
-        },
-        {
-          "type": "sigma",
-          "named": true
-        },
-        {
-          "type": "spilled_term",
-          "named": true
-        },
-        {
-          "type": "string",
           "named": true
         }
       ]

@@ -2910,8 +2910,12 @@
           "name": "lparen"
         },
         {
-          "type": "SYMBOL",
-          "name": "_term"
+          "type": "FIELD",
+          "name": "term",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_term"
+          }
         },
         {
           "type": "SYMBOL",

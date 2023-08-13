@@ -257,13 +257,19 @@ START and END specify the region to be fontified."
   "Fontify the head of a clause, by traversing its spine from NODE.
 OVERRIDE is the face override option of the calling font lock rule.
 START and END specify the region to be fontified."
-  (while (equal (treesit-node-type node) "app_term")
-    (setq node (treesit-node-child-by-field-name node "left")))
-  (when (equal (treesit-node-type node) "constant")
-    (treesit-fontify-with-override (treesit-node-start node)
-                                   (treesit-node-end node)
-                                   'elpi-clause-head-face
-                                   override start end)))
+  (while
+      (let ((ntype (treesit-node-type node)))
+       (cond
+        ((equal ntype "constant")
+         (treesit-fontify-with-override (treesit-node-start node)
+                                        (treesit-node-end node)
+                                        'elpi-clause-head-face
+                                        override start end) nil)
+        ((equal ntype "app_term")
+         (setq node (treesit-node-child-by-field-name node "left")) t)
+        ((equal ntype "paren_term")
+         (setq node (treesit-node-child-by-field-name node "term")) t)
+        (nil)))))
 
 ;; Font-locking rules
 
@@ -389,16 +395,15 @@ START and END specify the region to be fontified."
   `((elpi
      ((parent-is "source_file") column-0 0)
      ;; Program and namespace sections
-     ((query ((_ (prog_begin) (_) @capture (prog_end))))
-      parent-bol elpi-ts-mode-indent-offset)
      ((node-is "prog_begin") parent-bol 0)
      ((node-is "prog_end") parent-bol 0)
-     ((n-p-gp "constant" "namespace_section" nil)
-      parent-bol elpi-ts-mode-indent-offset) ;; Review...
+     ((parent-is "program_section")
+      parent-bol elpi-ts-mode-indent-offset)
+     ((parent-is "namespace_section")
+      parent-bol elpi-ts-mode-indent-offset)
      ;; Block comments
      ((node-is "start_block_comment") parent-bol 0)
-     ((node-is "block_comment_line") parent-bol 1)
-     ((node-is "end_block_comment") parent-bol 1)
+     ((parent-is "block_comment") parent-bol 1)
      ))
   "Tree-sitter indentation rules for `elpi-ts-mode'.")
 

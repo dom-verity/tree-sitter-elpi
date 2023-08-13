@@ -417,7 +417,7 @@ module.exports = grammar({
 
         spilled_term: $ => prec.dynamic(0, seq($.lcurly, $._term, $.rcurly)),
 
-        paren_term: $ => seq($.lparen, $._term, $.rparen),
+        paren_term: $ => seq($.lparen, field("term", $._term), $.rparen),
 
         list_term: $ => seq($.lbracket, optional($._list_items), $.rbracket),
 
