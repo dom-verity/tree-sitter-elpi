@@ -405,6 +405,29 @@
     }
   },
   {
+    "type": "block_comment",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block_comment_line",
+          "named": true
+        },
+        {
+          "type": "end_block_comment",
+          "named": true
+        },
+        {
+          "type": "start_block_comment",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "chr_rule",
     "named": true,
     "fields": {},
@@ -1878,10 +1901,6 @@
           "named": true
         },
         {
-          "type": "lcurly",
-          "named": true
-        },
-        {
           "type": "local_decl",
           "named": true
         },
@@ -1914,11 +1933,15 @@
           "named": true
         },
         {
-          "type": "program_section",
+          "type": "prog_begin",
           "named": true
         },
         {
-          "type": "rcurly",
+          "type": "prog_end",
+          "named": true
+        },
+        {
+          "type": "program_section",
           "named": true
         },
         {
@@ -2986,7 +3009,7 @@
     "named": true
   },
   {
-    "type": "block_comment",
+    "type": "block_comment_line",
     "named": true
   },
   {
@@ -3051,6 +3074,10 @@
   },
   {
     "type": "div",
+    "named": true
+  },
+  {
+    "type": "end_block_comment",
     "named": true
   },
   {
@@ -3319,6 +3346,10 @@
   },
   {
     "type": "slash",
+    "named": true
+  },
+  {
+    "type": "start_block_comment",
     "named": true
   },
   {

@@ -253,6 +253,14 @@
         ]
       }
     },
+    "_whitespace": {
+      "type": "PATTERN",
+      "value": "[^[^\\s]\\r\\n]+"
+    },
+    "_newline": {
+      "type": "PATTERN",
+      "value": "\\r?\\n|\\r"
+    },
     "_decl": {
       "type": "CHOICE",
       "members": [
@@ -988,7 +996,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "lcurly"
+          "name": "prog_begin"
         },
         {
           "type": "REPEAT",
@@ -999,7 +1007,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "rcurly"
+          "name": "prog_end"
         }
       ]
     },
@@ -4928,25 +4936,39 @@
         "value": "as"
       }
     },
-    "block_comment": {
+    "start_block_comment": {
       "type": "TOKEN",
       "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "STRING",
-            "value": "/*"
-          },
-          {
-            "type": "PATTERN",
-            "value": "[^*]*\\*+([^/*][^*]*\\*+)*"
-          },
-          {
-            "type": "STRING",
-            "value": "/"
-          }
-        ]
+        "type": "STRING",
+        "value": "/*"
       }
+    },
+    "end_block_comment": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "*/"
+      }
+    },
+    "block_comment": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "start_block_comment"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "block_comment_line"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_block_comment"
+        }
+      ]
     },
     "line_comment": {
       "type": "TOKEN",
@@ -5078,16 +5100,12 @@
   },
   "extras": [
     {
-      "type": "PATTERN",
-      "value": "\\s"
+      "type": "SYMBOL",
+      "name": "_whitespace"
     },
     {
-      "type": "STRING",
-      "value": "\n"
-    },
-    {
-      "type": "STRING",
-      "value": "\r"
+      "type": "SYMBOL",
+      "name": "_newline"
     },
     {
       "type": "SYMBOL",
@@ -5125,6 +5143,10 @@
     {
       "type": "SYMBOL",
       "name": "eof"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "block_comment_line"
     }
   ],
   "inline": [],

@@ -30,12 +30,13 @@
  * tree-sitter-elpi. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <tree_sitter/parser.h>
+#include "tree_sitter/parser.h"
 #include <wchar.h>
 
 enum TokenType {
     SKIP_COMMENT,
-    END_OF_FILE
+    END_OF_FILE,
+    BLOCK_COMMENT_LINE
 };
 
 void * tree_sitter_elpi_external_scanner_create() {
@@ -59,7 +60,7 @@ void tree_sitter_elpi_external_scanner_deserialize(void *payload,
     // Nothing to restore
 }
 
-const int START_STATE = 0;
+const int START_STATE = 1;
 const int ERROR_STATE = -1;
 const int END_STATE = 100;
 
@@ -70,36 +71,30 @@ const int END_STATE = 100;
 bool tree_sitter_elpi_external_scanner_scan(void *payload,
                                             TSLexer *lexer,
                                             const bool *valid_symbols) {
-    int blanks = 0;
+    bool nonempty = false;
     int skip_lines = 0;
     int state = START_STATE;
 
     while (state != END_STATE && state != ERROR_STATE) {
         switch (state) {
-        case 0: // skip over whitespace paying attention to EOF.
-            if (lexer->eof(lexer)) {
-                if (valid_symbols[END_OF_FILE]) {
-                    lexer->result_symbol = END_OF_FILE;
-                    state = END_STATE;
-                } else {
-                    state = ERROR_STATE;
-                }
-            } else if (isspace(lexer->lookahead)) {
-                lexer->advance(lexer,true);
-            } else {
-                state = 1;
-            }
-            break;
-        case 1: // States to handle skip comments
-            if (lexer->lookahead == '%' && valid_symbols[SKIP_COMMENT]) {
+        case 1:
+            if (lexer->eof(lexer) && valid_symbols[END_OF_FILE]) {
+                lexer->result_symbol = END_OF_FILE;
+                state = END_STATE;
+            } else if (lexer->lookahead == '%' && valid_symbols[SKIP_COMMENT]) {
+                lexer->result_symbol = SKIP_COMMENT;
                 NEXT(false, ERROR_STATE);
                 state = 2;
+            } else if (!lexer->eof(lexer) && !isspace(lexer->lookahead) &&
+                       valid_symbols[BLOCK_COMMENT_LINE]) {
+                lexer->result_symbol = BLOCK_COMMENT_LINE;
+                lexer->mark_end(lexer); // Need to peek an extra character
+                state = 15;
             } else {
                 state = ERROR_STATE;
             }
             break;
-            // States to handle skip comments follow.
-        case 2:
+        case 2: // States to handle skip comments follow.
             if (isblank(lexer->lookahead)) {
                 NEXT(false, ERROR_STATE);
             } else {
@@ -182,9 +177,9 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
             if (lexer->lookahead == '\n') {
                 state = END_STATE;
             } else if (isblank(lexer->lookahead)) {
-                blanks++;
+                nonempty = true;
                 NEXT(false, END_STATE);
-            } else if (blanks > 0) {
+            } else if (nonempty) {
                 state = 13;
             } else {
                 state = ERROR_STATE;
@@ -196,7 +191,6 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
                 skip_lines += lexer->lookahead - '0';
                 NEXT(false, END_STATE);
             } else {
-                lexer->result_symbol = SKIP_COMMENT;
                 state = 14;
             }
             break;
@@ -205,6 +199,35 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
                 NEXT(false, END_STATE);
             } else {
                 state = END_STATE;
+            }
+            break;
+        case 15: // States to handle block comment lines follow
+            if (lexer->lookahead == '*') {
+                lexer->advance(lexer, false);
+                if (lexer->eof(lexer)) {
+                    lexer->mark_end(lexer);
+                    state = END_STATE;
+                } else {
+                    state = 16; // Do look-ahead to check for /
+                }
+            } else if (lexer->lookahead == '\n' || lexer->lookahead == '\r') {
+                lexer->mark_end(lexer);
+                state = nonempty ? END_STATE : ERROR_STATE;
+            } else {
+                nonempty = true;
+                lexer->advance(lexer, false);
+                lexer->mark_end(lexer);
+                if (lexer->eof(lexer)) {
+                    state = END_STATE;
+                }
+            }
+            break;
+        case 16:
+            if (lexer->lookahead == '/') {
+                state = nonempty ? END_STATE : ERROR_STATE;
+            } else {
+                lexer->mark_end(lexer);
+                state = 15;
             }
             break;
         }

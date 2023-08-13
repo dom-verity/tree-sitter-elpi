@@ -124,10 +124,15 @@ function sep_list(s, r) {
 module.exports = grammar({
     name: 'elpi',
 
-    externals: $ => [$.skip_comment, $.eof],
+    externals: $ => [
+        $.skip_comment,
+        $.eof,
+        $.block_comment_line
+    ],
 
     extras: $ => [
-        /\s/, '\n', '\r',
+        $._whitespace,
+        $._newline,
         $.block_comment,
         $.line_comment,
         $.skip_comment
@@ -143,6 +148,10 @@ module.exports = grammar({
         source_file: $ => repeat($._decl),
 
         word: $ => token(allnames),
+
+        _whitespace: $ => /[^[^\s]\r\n]+/,
+
+        _newline: $ => /\r?\n|\r/,
 
         _decl: $ => choice(
             $.kind_decl,
@@ -263,7 +272,7 @@ module.exports = grammar({
 
         // Namespaces
         namespace_section: $ => seq(
-            $.namespace, $.constant, $.lcurly, repeat($._decl), $.rcurly
+            $.namespace, $.constant, $.prog_begin, repeat($._decl), $.prog_end
         ),
 
         // Program
@@ -590,11 +599,13 @@ module.exports = grammar({
 
         as: $ => token("as"),
 
-        block_comment: $ => token(
-            seq('/*',
-                /[^*]*\*+([^/*][^*]*\*+)*/,
-                '/'
-               )
+        start_block_comment: $ => token('/*'),
+        end_block_comment: $ => token("*/"),
+
+        block_comment: $ => seq(
+            $.start_block_comment,
+            repeat($.block_comment_line),
+            $.end_block_comment
         ),
 
         line_comment: $ => token(seq('%', /[^\n]*/)),

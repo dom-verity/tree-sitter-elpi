@@ -46,7 +46,7 @@
 (require 'treesit)
 (require 'rx)
 
-(defcustom elpi-ts-mode-indent-offset 4
+(defcustom elpi-ts-mode-indent-offset 2
   "Number of spaces for each indentation step in `elpi-ts-mode'."
   :version "29.1"
   :type 'integer
@@ -114,13 +114,15 @@
   '((t . (:inherit font-lock-variable-name-face)))
   "Face for applied occurrences of parameters in ELPI mode.")
 (defface elpi-defining-occurrence-face
-  '((t . (:inherit font-lock-variable-name-face)))
+  '((t . (:inherit font-lock-variable-name-face
+          :underline "firebrick")))
   "Face for defining occurrences of parameters in ELPI mode.")
 (defface elpi-constant-face
   '((t . (:inherit font-lock-constant-face)))
   "Face for constant identifiers in ELPI mode.")
 (defface elpi-clause-head-face
-  '((t . (:inherit font-lock-function-name-face)))
+  '((t . (:inherit font-lock-constant-face
+          :underline "firebrick")))
   "Face for head identifiers of clauses in ELPI mode.")
 (defface elpi-keyword-face
   '((t . (:inherit font-lock-keyword-face)))
@@ -198,6 +200,16 @@
           family_sharp family_tilde)
   "ELPI operator nodes for tree-sitter font locking.")
 
+(defvar elpi-ts-mode--brackets
+  '(lparen rparen lcurly rcurly lbracket rbracket
+           prog_begin prog_end)
+  "ELPI bracket nodes for tree-sitter font locking."
+)
+
+;; Functions to implement more complex font-locking, such as determining
+;; occurrences of bound variables so that they may be assigned a
+;; distinguishing colour.
+
 (defun elpi-ts-mode--find-binding (node &rest _)
   "Search up from a constant NODE to determine whether it is bound by a lambda.
 Returns the parameter of the lambda abstraction that binds the given variable,
@@ -252,6 +264,8 @@ START and END specify the region to be fontified."
                                    (treesit-node-end node)
                                    'elpi-clause-head-face
                                    override start end)))
+
+;; Font-locking rules
 
 (defvar elpi-ts-mode--font-lock-settings
   (treesit-font-lock-rules
@@ -312,7 +326,7 @@ START and END specify the region to be fontified."
    :language 'elpi
    :override nil
    :feature 'punctuation-bracket
-   `([(lparen) (rparen) (lcurly) (rcurly) (lbracket) (rbracket)]
+   `(,(cl-map 'vector #'(lambda (x) `(,x)) elpi-ts-mode--brackets)
      @elpi-punctuation-bracket-face)
    :language 'elpi
    :override nil
@@ -367,6 +381,18 @@ START and END specify the region to be fontified."
    )
   "Tree-sitter font-lock settings for `elpi-ts-mode'.")
 
+;; Code indentation
+
+;; Simple indentation rules
+
+(defvar elpi-ts-mode--indent-rules
+  `((elpi
+     ((parent-is "source_file") column-0 0)
+     ((query (_ (prog_begin) (_) @capture (prog_end)))
+      parent-bol elpi-ts-mode-indent-offset)
+     ))
+  "Tree-sitter indentation rules for `elpi-ts-mode'.")
+
 ;;;###autoload
 (define-derived-mode elpi-ts-mode prog-mode "ELPI"
   "Major mode for editing ELPI, powered by tree-sitter."
@@ -384,9 +410,13 @@ START and END specify the region to be fontified."
               '((comment number string-content string-delimiter escape
                          punctuation-delimiter)
                 (punctuation-bracket keyword disabled operator attribute
-                                     operator-builtin label constant-builtin type-builtin)
+                                     operator-builtin label constant-builtin
+                                     type-builtin)
                 (variable wildcard constant macro lambda-parameter
                           clause-head)))
+
+  ;; Indentation
+  (setq-local treesit-simple-indent-rules elpi-ts-mode--indent-rules)
 
   (treesit-major-mode-setup))
 
