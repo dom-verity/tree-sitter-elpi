@@ -610,16 +610,8 @@ module.exports = grammar({
             $.end_block_comment
         ),
 
-        start_skip_comment: $ => token(
-            prec(1, seq("%", repeat(ws), "elpi:skip"))),
-
-        skip_comment_tail: $ => token(/[^\n\r]*/),
-
-        skip_comment: $ => seq(
-            $.start_skip_comment,
-            field("skips", alias(/[0-9]*/, $.integer)),
-            $.skip_comment_tail
-        ),
+        skip_comment: $ => token(
+            prec(1, seq("%", repeat(ws), "elpi:skip", /[^\n\r]*/))),
 
         line_comment: $ => token(prec(0, /%[^\n\r]*/)),
 

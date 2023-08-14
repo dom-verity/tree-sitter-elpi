@@ -4983,7 +4983,7 @@
         }
       ]
     },
-    "start_skip_comment": {
+    "skip_comment": {
       "type": "TOKEN",
       "content": {
         "type": "PREC",
@@ -5005,43 +5005,14 @@
             {
               "type": "STRING",
               "value": "elpi:skip"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[^\\n\\r]*"
             }
           ]
         }
       }
-    },
-    "skip_comment_tail": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PATTERN",
-        "value": "[^\\n\\r]*"
-      }
-    },
-    "skip_comment": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "start_skip_comment"
-        },
-        {
-          "type": "FIELD",
-          "name": "skips",
-          "content": {
-            "type": "ALIAS",
-            "content": {
-              "type": "PATTERN",
-              "value": "[0-9]*"
-            },
-            "named": true,
-            "value": "integer"
-          }
-        },
-        {
-          "type": "SYMBOL",
-          "name": "skip_comment_tail"
-        }
-      ]
     },
     "line_comment": {
       "type": "TOKEN",
