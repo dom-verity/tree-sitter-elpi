@@ -2558,6 +2558,36 @@
     }
   },
   {
+    "type": "skip_comment",
+    "named": true,
+    "fields": {
+      "skips": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "integer",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "skip_comment_tail",
+          "named": true
+        },
+        {
+          "type": "start_skip_comment",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "source_file",
     "named": true,
     "fields": {},
@@ -3348,7 +3378,7 @@
     "named": true
   },
   {
-    "type": "skip_comment",
+    "type": "skip_comment_tail",
     "named": true
   },
   {
@@ -3357,6 +3387,10 @@
   },
   {
     "type": "start_block_comment",
+    "named": true
+  },
+  {
+    "type": "start_skip_comment",
     "named": true
   },
   {

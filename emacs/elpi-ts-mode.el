@@ -271,6 +271,23 @@ START and END specify the region to be fontified."
          (setq node (treesit-node-child-by-field-name node "term")) t)
         (nil)))))
 
+(defun elpi-ts-mode--fontify-skip-comment (node override start end &rest _)
+  "Fontify skip comment NODE and the skipped lines that follow.
+OVERRIDE is the face override option of the calling font lock rule.
+START and END specify the region to be fontified."
+  (save-excursion
+    (goto-char (treesit-node-start node))
+    (beginning-of-line)
+    (pos-eol
+     (+ (string-to-number
+         (treesit-node-text
+          (treesit-node-child-by-field-name node "skips")))
+        1))
+    (treesit-fontify-with-override (treesit-node-start node)
+                                   (point)
+                                   'elpi-comment-face
+                                   override start end)))
+
 ;; Font-locking rules
 
 (defvar elpi-ts-mode--font-lock-settings
@@ -279,7 +296,11 @@ START and END specify the region to be fontified."
    :language 'elpi
    :override t
    :feature 'comment
-   '([(line_comment) (block_comment) (skip_comment)] @elpi-comment-face)
+   '([(line_comment) (block_comment)] @elpi-comment-face)
+   :language 'elpi
+   :override t
+   :feature 'skip-comment
+   '([(skip_comment)] @elpi-ts-mode--fontify-skip-comment)
    :language 'elpi
    :override t
    :feature 'escape
@@ -446,7 +467,7 @@ START and END specify the region to be fontified."
   (setq-local treesit-font-lock-settings elpi-ts-mode--font-lock-settings)
   (setq-local treesit-font-lock-feature-list
               '((comment number string-content string-delimiter escape
-                         punctuation-delimiter)
+                         punctuation-delimiter skip-comment)
                 (punctuation-bracket keyword disabled operator attribute
                                      operator-builtin label constant-builtin
                                      type-builtin)

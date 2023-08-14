@@ -44,6 +44,8 @@ const allnames = choice(
     seq(ucase, repeat(idchar)),
     seq(lcase, repeat(idcharns)),
     seq('@',repeat(idchar)));
+const ws = /[^[^\s]\r\n]/;
+const newline = /\r?\n|\r/;
 
 const PREC = {
     AS: [0, prec],                      // as (non assoc, infix)
@@ -125,7 +127,7 @@ module.exports = grammar({
     name: 'elpi',
 
     externals: $ => [
-        $.skip_comment,
+        $.skip_comment_old,
         $.eof,
         $.block_comment_line
     ],
@@ -149,9 +151,9 @@ module.exports = grammar({
 
         word: $ => token(allnames),
 
-        _whitespace: $ => /[^[^\s]\r\n]+/,
+        _whitespace: $ => token(repeat1(ws)),
 
-        _newline: $ => /\r?\n|\r/,
+        _newline: $ => token(newline),
 
         _decl: $ => choice(
             $.kind_decl,
@@ -608,7 +610,18 @@ module.exports = grammar({
             $.end_block_comment
         ),
 
-        line_comment: $ => token(seq('%', /[^\n]*/)),
+        start_skip_comment: $ => token(
+            prec(1, seq("%", repeat(ws), "elpi:skip"))),
+
+        skip_comment_tail: $ => token(/[^\n\r]*/),
+
+        skip_comment: $ => seq(
+            $.start_skip_comment,
+            field("skips", alias(/[0-9]*/, $.integer)),
+            $.skip_comment_tail
+        ),
+
+        line_comment: $ => token(prec(0, /%[^\n\r]*/)),
 
         escape_sequence: $ => token.immediate(
             seq('\\', choice('n', 'b', 't', 'r', '\\', '"'))
