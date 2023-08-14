@@ -391,6 +391,17 @@ START and END specify the region to be fontified."
 
 ;; Simple indentation rules
 
+(defun elpi-ts-mode--anchor-comment-line (node parent _b &rest _)
+  "Indent NODE as a block comment line depending on first line of PARENT."
+  (if (string-prefix-p "*" (treesit-node-text node))
+      (+ (treesit-node-start parent) 1)
+    (save-excursion
+      (goto-char (treesit-node-end (treesit-node-child parent 0)))
+      (re-search-forward "[^:blank:]")
+      (if (eolp)
+          (treesit-node-start parent)
+        (treesit-node-start (treesit-node-child parent 1))))))
+
 (defvar elpi-ts-mode--indent-rules
   `((elpi
      ((parent-is "source_file") column-0 0)
@@ -403,7 +414,7 @@ START and END specify the region to be fontified."
       parent-bol elpi-ts-mode-indent-offset)
      ;; Block comments
      ((node-is "start_block_comment") parent-bol 0)
-     ((parent-is "block_comment") parent-bol 1)
+     ((parent-is "block_comment") elpi-ts-mode--anchor-comment-line 0)
      ))
   "Tree-sitter indentation rules for `elpi-ts-mode'.")
 
