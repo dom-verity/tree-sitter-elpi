@@ -391,30 +391,43 @@ START and END specify the region to be fontified."
 
 ;; Simple indentation rules
 
-(defun elpi-ts-mode--anchor-comment-line (node parent _b &rest _)
-  "Indent NODE as a block comment line depending on first line of PARENT."
-  (if (string-prefix-p "*" (treesit-node-text node))
-      (+ (treesit-node-start parent) 1)
-    (save-excursion
-      (goto-char (treesit-node-end (treesit-node-child parent 0)))
-      (re-search-forward "[^:blank:]")
-      (if (eolp)
-          (treesit-node-start parent)
-        (treesit-node-start (treesit-node-child parent 1))))))
+(defun elpi-ts-mode--block-comment-style (node)
+  "Return nil if the block comment NODE should be indented as a doc-comment."
+  (and
+   (equal (line-number-at-pos
+           (treesit-node-start (treesit-node-child node 0)))
+          (line-number-at-pos
+           (treesit-node-start (treesit-node-child node 1))))
+   (not (string-prefix-p "*" (treesit-node-text (treesit-node-child node 1))))))
+
+(defun elpi-ts-mode--anchor-block-comment-line (node parent _b &rest _)
+  "Indent NODE as a block comment line depending on style of PARENT."
+  (if (elpi-ts-mode--block-comment-style parent)
+      (treesit-node-start (treesit-node-child parent 1))
+    (if (string-prefix-p "*" (treesit-node-text node))
+        (+ (treesit-node-start parent) 1)
+      (treesit-node-start parent))))
+
+(defun elpi-ts-mode--anchor-end-block-comment (_n parent _b &rest _)
+  "Indent as an end block comment line depending on style of PARENT."
+  (if (elpi-ts-mode--block-comment-style parent)
+      (treesit-node-start parent)
+    (+ (treesit-node-start parent) 1)))
 
 (defvar elpi-ts-mode--indent-rules
   `((elpi
      ((parent-is "source_file") column-0 0)
-     ;; Program and namespace sections
+     ;; Program and name-space sections
      ((node-is "prog_begin") parent-bol 0)
      ((node-is "prog_end") parent-bol 0)
-     ((parent-is "program_section")
-      parent-bol elpi-ts-mode-indent-offset)
-     ((parent-is "namespace_section")
-      parent-bol elpi-ts-mode-indent-offset)
+     ((parent-is "program_section") parent-bol elpi-ts-mode-indent-offset)
+     ((parent-is "namespace_section") parent-bol elpi-ts-mode-indent-offset)
      ;; Block comments
      ((node-is "start_block_comment") parent-bol 0)
-     ((parent-is "block_comment") elpi-ts-mode--anchor-comment-line 0)
+     ((node-is "block_comment_line") elpi-ts-mode--anchor-block-comment-line 0)
+     ((node-is "end_block_comment") elpi-ts-mode--anchor-end-block-comment 0)
+     ;; Skip comments
+     ;; ((node-is "skip_comment") parent-bol 0)
      ))
   "Tree-sitter indentation rules for `elpi-ts-mode'.")
 
