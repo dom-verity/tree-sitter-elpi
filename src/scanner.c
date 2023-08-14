@@ -51,7 +51,7 @@ enum TokenType {
         __auto_type _b = (b);                   \
         _a < _b ? _a : _b; })
 
-inline bool eolp(int32_t ch) {
+bool eolp(int32_t ch) {
     return (ch == '\r' || ch == '\n');
 }
 
