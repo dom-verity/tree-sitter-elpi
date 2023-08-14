@@ -332,6 +332,10 @@
         {
           "type": "SYMBOL",
           "name": "local_decl"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "skip_comment"
         }
       ]
     },
@@ -1242,10 +1246,6 @@
         {
           "type": "SYMBOL",
           "name": "closed_decl"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "skip_comment"
         }
       ]
     },

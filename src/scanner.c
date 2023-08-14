@@ -107,7 +107,8 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
                 lexer->result_symbol = SKIP_COMMENT_HEAD;
                 NEXT(false, ERROR_STATE);
                 state = 2;
-            } else if (!lexer->eof(lexer) && stored_state.lines_to_skip > 0 &&
+            } else if (!lexer->eof(lexer) && !isspace(lexer->lookahead) &&
+                       stored_state.lines_to_skip > 0 &&
                        valid_symbols[SKIP_COMMENT_LINE]) {
                 lexer->result_symbol = SKIP_COMMENT_LINE;
                 state = 15;

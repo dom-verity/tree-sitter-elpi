@@ -271,21 +271,6 @@ START and END specify the region to be fontified."
          (setq node (treesit-node-child-by-field-name node "term")) t)
         (nil)))))
 
-(defun elpi-ts-mode--fontify-skip-comment (node override start end &rest _)
-  "Fontify skip comment NODE and the skipped lines that follow.
-OVERRIDE is the face override option of the calling font lock rule.
-START and END specify the region to be fontified."
-  (save-excursion
-    (goto-char (treesit-node-start node))
-    (re-search-forward "skip[[:blank:]]*\\([0-9]*\\)")
-    (let ((skips (string-to-number (match-string 1))))
-      (beginning-of-line)
-      (treesit-fontify-with-override
-       (treesit-node-start node)
-       (pos-eol (+ skips 1))
-       'elpi-comment-face
-       override nil nil))))
-
 ;; Font-locking rules
 
 (defvar elpi-ts-mode--font-lock-settings
@@ -294,11 +279,7 @@ START and END specify the region to be fontified."
    :language 'elpi
    :override t
    :feature 'comment
-   '([(line_comment) (block_comment)] @elpi-comment-face)
-   :language 'elpi
-   :override t
-   :feature 'skip-comment
-   '(() @elpi-ts-mode--fontify-skip-comment)
+   '([(line_comment) (block_comment) (skip_comment)] @elpi-comment-face)
    :language 'elpi
    :override t
    :feature 'escape
@@ -436,17 +417,17 @@ START and END specify the region to be fontified."
 (defvar elpi-ts-mode--indent-rules
   `((elpi
      ((parent-is "source_file") column-0 0)
-     ;; Program and name-space sections
-     ((node-is "prog_begin") parent-bol 0)
-     ((node-is "prog_end") parent-bol 0)
-     ((parent-is "program_section") parent-bol elpi-ts-mode-indent-offset)
-     ((parent-is "namespace_section") parent-bol elpi-ts-mode-indent-offset)
      ;; Block comments
      ((node-is "start_block_comment") parent-bol 0)
      ((node-is "block_comment_line") elpi-ts-mode--anchor-block-comment-line 0)
      ((node-is "end_block_comment") elpi-ts-mode--anchor-end-block-comment 0)
      ;; Skip comments
-     ;; ((node-is "skip_comment") parent-bol 0)
+     ((parent-is "skip_comment") parent-bol 0)
+     ;; Program and name-space sections
+     ((node-is "prog_begin") parent-bol 0)
+     ((node-is "prog_end") parent-bol 0)
+     ((parent-is "program_section") parent-bol elpi-ts-mode-indent-offset)
+     ((parent-is "namespace_section") parent-bol elpi-ts-mode-indent-offset)
      ))
   "Tree-sitter indentation rules for `elpi-ts-mode'.")
 
@@ -465,7 +446,7 @@ START and END specify the region to be fontified."
   (setq-local treesit-font-lock-settings elpi-ts-mode--font-lock-settings)
   (setq-local treesit-font-lock-feature-list
               '((comment number string-content string-delimiter escape
-                         punctuation-delimiter skip-comment)
+                         punctuation-delimiter)
                 (punctuation-bracket keyword disabled operator attribute
                                      operator-builtin label constant-builtin
                                      type-builtin)
