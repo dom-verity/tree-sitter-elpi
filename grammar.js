@@ -127,9 +127,10 @@ module.exports = grammar({
     name: 'elpi',
 
     externals: $ => [
-        $.skip_comment_old,
-        $.eof,
-        $.block_comment_line
+        $.skip_comment_head,
+        $.skip_comment_line,
+        $.block_comment_line,
+        $.eof
     ],
 
     extras: $ => [
@@ -137,7 +138,6 @@ module.exports = grammar({
         $._newline,
         $.block_comment,
         $.line_comment,
-        $.skip_comment
     ],
 
     conflicts: $ => [
@@ -170,7 +170,9 @@ module.exports = grammar({
             $.constraint_section,
             $.shorten_decl,
             $.accumulate_decl,
-            $.local_decl
+            $.local_decl,
+            // Skip comments can only appear at top level.
+            $.skip_comment
         ),
 
         // Attributes
@@ -610,8 +612,10 @@ module.exports = grammar({
             $.end_block_comment
         ),
 
-        skip_comment: $ => token(
-            prec(1, seq("%", repeat(ws), "elpi:skip", /[^\n\r]*/))),
+        skip_comment: $ => seq(
+            $.skip_comment_head,
+            repeat($.skip_comment_line)
+        ),
 
         line_comment: $ => token(prec(0, /%[^\n\r]*/)),
 

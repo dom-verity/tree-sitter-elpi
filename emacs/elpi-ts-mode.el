@@ -277,15 +277,14 @@ OVERRIDE is the face override option of the calling font lock rule.
 START and END specify the region to be fontified."
   (save-excursion
     (goto-char (treesit-node-start node))
-    (let ((skips
-           (if (re-search-forward "%[[:blank:]]*elpi:skip[[:blank:]]*\([0-9]*\)")
-               (string-to-number (match-string 1)) 0)))
+    (re-search-forward "skip[[:blank:]]*\\([0-9]*\\)")
+    (let ((skips (string-to-number (match-string 1))))
       (beginning-of-line)
       (treesit-fontify-with-override
        (treesit-node-start node)
        (pos-eol (+ skips 1))
        'elpi-comment-face
-       override start end))))
+       override nil nil))))
 
 ;; Font-locking rules
 
@@ -299,7 +298,7 @@ START and END specify the region to be fontified."
    :language 'elpi
    :override t
    :feature 'skip-comment
-   '([(skip_comment)] @elpi-ts-mode--fontify-skip-comment)
+   '(() @elpi-ts-mode--fontify-skip-comment)
    :language 'elpi
    :override t
    :feature 'escape

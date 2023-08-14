@@ -31,48 +31,69 @@
  */
 
 #include "tree_sitter/parser.h"
+#include <stdlib.h>
+#include <string.h>
 #include <wchar.h>
 
 enum TokenType {
-    SKIP_COMMENT,
-    END_OF_FILE,
-    BLOCK_COMMENT_LINE
+    SKIP_COMMENT_HEAD,
+    SKIP_COMMENT_LINE,
+    BLOCK_COMMENT_LINE,
+    END_OF_FILE
 };
 
+#define NEXT(ws, eof_state)                             \
+    lexer->advance(lexer, ws);                          \
+    if (lexer->eof(lexer)) { state = eof_state; }
+
+#define min(a,b)                                \
+    ({ __auto_type _a = (a);                    \
+        __auto_type _b = (b);                   \
+        _a < _b ? _a : _b; })
+
+inline bool eolp(int32_t ch) {
+    return (ch == '\r' || ch == '\n');
+}
+
+typedef struct {
+    unsigned lines_to_skip;
+} scanner_memo;
+
+scanner_memo stored_state = {0};
+
 void * tree_sitter_elpi_external_scanner_create() {
-    // Nothing allocated
-    return NULL;
+    // Return heap allocated block big enough to store a scanner_memo object.
+    return malloc(sizeof(scanner_memo));
 }
 
 void tree_sitter_elpi_external_scanner_destroy(void *payload) {
-    // Nothing to destroy
+    free(payload);
 }
 
 unsigned tree_sitter_elpi_external_scanner_serialize(void *payload,
                                                      void *buffer) {
-    // No state stored between calls
-    return 0;
+    memcpy(buffer, &stored_state, sizeof(scanner_memo));
+    return sizeof(scanner_memo);
 }
 
 void tree_sitter_elpi_external_scanner_deserialize(void *payload,
                                                    const char *buffer,
                                                    unsigned length) {
-    // Nothing to restore
+    memcpy(&stored_state, buffer, min(length, sizeof(scanner_memo)));
 }
 
 const int START_STATE = 1;
 const int ERROR_STATE = -1;
 const int END_STATE = 100;
 
-#define NEXT(ws, eof_state)\
-    lexer->advance(lexer, ws);\
-    if (lexer->eof(lexer)) { state = eof_state; }
+// Maximum number of digits in number specified in a skip comment
+const int MAX_DIGITS = 5;
 
 bool tree_sitter_elpi_external_scanner_scan(void *payload,
                                             TSLexer *lexer,
                                             const bool *valid_symbols) {
     bool nonempty = false;
-    int skip_lines = 0;
+    int digits = 0;
     int state = START_STATE;
 
     while (state != END_STATE && state != ERROR_STATE) {
@@ -81,20 +102,25 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
             if (lexer->eof(lexer) && valid_symbols[END_OF_FILE]) {
                 lexer->result_symbol = END_OF_FILE;
                 state = END_STATE;
-            } else if (lexer->lookahead == '%' && valid_symbols[SKIP_COMMENT]) {
-                lexer->result_symbol = SKIP_COMMENT;
+            } else if (lexer->lookahead == '%' &&
+                       valid_symbols[SKIP_COMMENT_HEAD]) {
+                lexer->result_symbol = SKIP_COMMENT_HEAD;
                 NEXT(false, ERROR_STATE);
                 state = 2;
+            } else if (!lexer->eof(lexer) && stored_state.lines_to_skip > 0 &&
+                       valid_symbols[SKIP_COMMENT_LINE]) {
+                lexer->result_symbol = SKIP_COMMENT_LINE;
+                state = 15;
             } else if (!lexer->eof(lexer) && !isspace(lexer->lookahead) &&
                        valid_symbols[BLOCK_COMMENT_LINE]) {
                 lexer->result_symbol = BLOCK_COMMENT_LINE;
                 lexer->mark_end(lexer); // Need to peek an extra character
-                state = 15;
+                state = 16;
             } else {
                 state = ERROR_STATE;
             }
             break;
-        case 2: // States to handle skip comments follow.
+        case 2: // States to handle skip comment headers follow.
             if (isblank(lexer->lookahead)) {
                 NEXT(false, ERROR_STATE);
             } else {
@@ -167,6 +193,7 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
             break;
         case 11:
             if (lexer->lookahead == 'p') {
+                stored_state.lines_to_skip = 0;
                 state = 12;
                 NEXT(false, END_STATE);
             } else {
@@ -174,7 +201,7 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
             }
             break;
         case 12:
-            if (lexer->lookahead == '\n') {
+            if (eolp(lexer->lookahead)) {
                 state = END_STATE;
             } else if (isblank(lexer->lookahead)) {
                 nonempty = true;
@@ -186,31 +213,43 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
             }
             break;
         case 13:
-            if (isdigit(lexer->lookahead)) {
-                skip_lines *= 10;
-                skip_lines += lexer->lookahead - '0';
+            if (isdigit(lexer->lookahead) && digits < MAX_DIGITS) {
+                stored_state.lines_to_skip *= 10;
+                stored_state.lines_to_skip += lexer->lookahead - '0';
+                digits++;
                 NEXT(false, END_STATE);
             } else {
                 state = 14;
             }
             break;
         case 14:
-            if (lexer->lookahead != '\n' || skip_lines-- > 0) {
-                NEXT(false, END_STATE);
-            } else {
+            if (eolp(lexer->lookahead)) {
                 state = END_STATE;
+            } else {
+                NEXT(false, END_STATE);
             }
             break;
-        case 15: // States to handle block comment lines follow
+        case 15: // States to handle skip comment lines follow
+            if (eolp(lexer->lookahead)) {
+                state = nonempty ? END_STATE : ERROR_STATE;
+            } else if (!nonempty) {
+                nonempty = true;
+                stored_state.lines_to_skip--;
+                NEXT(false, END_STATE);
+            } else {
+                NEXT(false, END_STATE);
+            }
+            break;
+        case 16: // States to handle block comment lines follow
             if (lexer->lookahead == '*') {
                 lexer->advance(lexer, false);
                 if (lexer->eof(lexer)) {
                     lexer->mark_end(lexer);
                     state = END_STATE;
                 } else {
-                    state = 16; // Do look-ahead to check for /
+                    state = 17; // Do look-ahead to check for /
                 }
-            } else if (lexer->lookahead == '\n' || lexer->lookahead == '\r') {
+            } else if (eolp(lexer->lookahead)) {
                 lexer->mark_end(lexer);
                 state = nonempty ? END_STATE : ERROR_STATE;
             } else {
@@ -222,13 +261,13 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
                 }
             }
             break;
-        case 16:
+        case 17:
             if (lexer->lookahead == '/') {
                 state = nonempty ? END_STATE : ERROR_STATE;
             } else {
                 nonempty = true;
                 lexer->mark_end(lexer);
-                state = 15;
+                state = 16;
             }
             break;
         }

@@ -1242,6 +1242,10 @@
         {
           "type": "SYMBOL",
           "name": "closed_decl"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "skip_comment"
         }
       ]
     },
@@ -4984,35 +4988,20 @@
       ]
     },
     "skip_comment": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PREC",
-        "value": 1,
-        "content": {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "%"
-            },
-            {
-              "type": "REPEAT",
-              "content": {
-                "type": "PATTERN",
-                "value": "[^[^\\s]\\r\\n]"
-              }
-            },
-            {
-              "type": "STRING",
-              "value": "elpi:skip"
-            },
-            {
-              "type": "PATTERN",
-              "value": "[^\\n\\r]*"
-            }
-          ]
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "skip_comment_head"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "skip_comment_line"
+          }
         }
-      }
+      ]
     },
     "line_comment": {
       "type": "TOKEN",
@@ -5153,10 +5142,6 @@
     {
       "type": "SYMBOL",
       "name": "line_comment"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "skip_comment"
     }
   ],
   "conflicts": [
@@ -5177,15 +5162,19 @@
   "externals": [
     {
       "type": "SYMBOL",
-      "name": "skip_comment_old"
+      "name": "skip_comment_head"
     },
     {
       "type": "SYMBOL",
-      "name": "eof"
+      "name": "skip_comment_line"
     },
     {
       "type": "SYMBOL",
       "name": "block_comment_line"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "eof"
     }
   ],
   "inline": [],
