@@ -39,7 +39,9 @@ enum TokenType {
     SKIP_COMMENT_HEAD,
     SKIP_COMMENT_LINE,
     BLOCK_COMMENT_LINE,
-    END_OF_FILE
+    END_OF_FILE,
+    END_OF_LINE,
+    WHITESPACE
 };
 
 #define NEXT(ws, eof_state)                             \
@@ -56,10 +58,12 @@ bool eolp(int32_t ch) {
 }
 
 typedef struct {
+    unsigned line_no;
+    unsigned skip_header_line;
     unsigned lines_to_skip;
 } scanner_memo;
 
-scanner_memo stored_state = {0};
+scanner_memo stored_state = {0,0,0};
 
 void * tree_sitter_elpi_external_scanner_create() {
     // Return heap allocated block big enough to store a scanner_memo object.
@@ -86,7 +90,7 @@ const int START_STATE = 1;
 const int ERROR_STATE = -1;
 const int END_STATE = 100;
 
-// Maximum number of digits in number specified in a skip comment
+// Maximum number of digits in the number specified in a skip comment
 const int MAX_DIGITS = 5;
 
 bool tree_sitter_elpi_external_scanner_scan(void *payload,
@@ -100,20 +104,52 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
         switch (state) {
         case 1:
             if (lexer->eof(lexer) && valid_symbols[END_OF_FILE]) {
-                lexer->result_symbol = END_OF_FILE;
-                state = END_STATE;
+                if (valid_symbols[END_OF_FILE]) {
+                    lexer->result_symbol = END_OF_FILE;
+                    state = END_STATE;
+                } else {
+                    state = ERROR_STATE;
+                }
+            } else if (lexer->lookahead == '\n') {
+                if (valid_symbols[END_OF_LINE]) {
+                    lexer->result_symbol = END_OF_LINE;
+                    stored_state.line_no++;
+                    NEXT(false, END_STATE);
+                    state = END_STATE;
+                } else {
+                    state = ERROR_STATE;
+                }
+            } else if (isspace(lexer->lookahead)) {
+                lexer->result_symbol = WHITESPACE;
+                int last = lexer->lookahead;
+                lexer->advance(lexer, false);
+                if (lexer->eof(lexer)) {
+                    state = valid_symbols[WHITESPACE] ? END_STATE : ERROR_STATE;
+                } else if (last == '\r' && lexer->lookahead == '\n') {
+                    if (valid_symbols[END_OF_LINE]) {
+                        lexer->result_symbol = END_OF_LINE;
+                        stored_state.line_no++;
+                        NEXT(false, END_STATE);
+                        state = END_STATE;
+                    } else {
+                        state = ERROR_STATE;
+                    }
+                } else if (valid_symbols[WHITESPACE]) {
+                    lexer->mark_end(lexer);   // For extra char of lookahead.
+                    state = 17;
+                } else {
+                    state = ERROR_STATE;
+                }
             } else if (lexer->lookahead == '%' &&
                        valid_symbols[SKIP_COMMENT_HEAD]) {
                 lexer->result_symbol = SKIP_COMMENT_HEAD;
                 NEXT(false, ERROR_STATE);
                 state = 2;
-            } else if (!lexer->eof(lexer) && !isspace(lexer->lookahead) &&
-                       stored_state.lines_to_skip > 0 &&
+            } else if (stored_state.lines_to_skip > 0 &&
                        valid_symbols[SKIP_COMMENT_LINE]) {
                 lexer->result_symbol = SKIP_COMMENT_LINE;
                 state = 15;
-            } else if (!lexer->eof(lexer) && !isspace(lexer->lookahead) &&
-                       valid_symbols[BLOCK_COMMENT_LINE]) {
+            } else if (valid_symbols[BLOCK_COMMENT_LINE]) {
                 lexer->result_symbol = BLOCK_COMMENT_LINE;
                 lexer->mark_end(lexer); // Need to peek an extra character
                 state = 16;
@@ -230,7 +266,7 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
                 NEXT(false, END_STATE);
             }
             break;
-        case 15: // States to handle skip comment lines follow
+        case 15: // Process skip comment line
             if (eolp(lexer->lookahead)) {
                 state = nonempty ? END_STATE : ERROR_STATE;
             } else if (!nonempty) {
@@ -241,14 +277,17 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
                 NEXT(false, END_STATE);
             }
             break;
-        case 16: // States to handle block comment lines follow
+        case 16: // Process block comment line
             if (lexer->lookahead == '*') {
                 lexer->advance(lexer, false);
                 if (lexer->eof(lexer)) {
                     lexer->mark_end(lexer);
                     state = END_STATE;
+                } else if (lexer->lookahead == '/') {
+                    state = nonempty ? END_STATE : ERROR_STATE;
                 } else {
-                    state = 17; // Do look-ahead to check for /
+                    nonempty = true;
+                    lexer->mark_end(lexer);
                 }
             } else if (eolp(lexer->lookahead)) {
                 lexer->mark_end(lexer);
@@ -262,16 +301,24 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
                 }
             }
             break;
-        case 17:
-            if (lexer->lookahead == '/') {
-                state = nonempty ? END_STATE : ERROR_STATE;
-            } else {
-                nonempty = true;
+        case 17:  // Process white space
+            if (lexer->lookahead == '\r') {
+                lexer->advance(lexer, false);
+                if (lexer->eof(lexer)) {
+                    lexer->mark_end(lexer);
+                    state = END_STATE;
+                } else if (lexer->lookahead == '\n'){
+                    state = END_STATE;
+                } else {
+                    lexer->mark_end(lexer);
+                }
+            } else if (isspace(lexer->lookahead) && lexer->lookahead != '\n') {
+                lexer->advance(lexer, false);
                 lexer->mark_end(lexer);
-                state = 16;
+            } else {
+                state = END_STATE;
             }
             break;
-        }
     }
 
     return (state != ERROR_STATE);
