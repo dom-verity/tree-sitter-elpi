@@ -1953,10 +1953,6 @@
           "named": true
         },
         {
-          "type": "skip_comment",
-          "named": true
-        },
-        {
           "type": "type_decl",
           "named": true
         },
@@ -2401,10 +2397,6 @@
           "named": true
         },
         {
-          "type": "skip_comment",
-          "named": true
-        },
-        {
           "type": "type_decl",
           "named": true
         },
@@ -2566,25 +2558,6 @@
     }
   },
   {
-    "type": "skip_comment",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "skip_comment_head",
-          "named": true
-        },
-        {
-          "type": "skip_comment_line",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "source_file",
     "named": true,
     "fields": {},
@@ -2662,10 +2635,6 @@
         },
         {
           "type": "sig_decl",
-          "named": true
-        },
-        {
-          "type": "skip_comment",
           "named": true
         },
         {

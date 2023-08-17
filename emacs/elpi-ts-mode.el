@@ -279,7 +279,8 @@ START and END specify the region to be fontified."
    :language 'elpi
    :override t
    :feature 'comment
-   '([(line_comment) (block_comment) (skip_comment)] @elpi-comment-face)
+   '([(line_comment) (block_comment) (skip_comment_head) (skip_comment_line)]
+     @elpi-comment-face)
    :language 'elpi
    :override t
    :feature 'escape
@@ -421,8 +422,6 @@ START and END specify the region to be fontified."
      ((node-is "start_block_comment") parent-bol 0)
      ((node-is "block_comment_line") elpi-ts-mode--anchor-block-comment-line 0)
      ((node-is "end_block_comment") elpi-ts-mode--anchor-end-block-comment 0)
-     ;; Skip comments
-     ((parent-is "skip_comment") parent-bol 0)
      ;; Program and name-space sections
      ((node-is "prog_begin") parent-bol 0)
      ((node-is "prog_end") parent-bol 0)

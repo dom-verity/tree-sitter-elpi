@@ -130,12 +130,16 @@ module.exports = grammar({
         $.skip_comment_head,
         $.skip_comment_line,
         $.block_comment_line,
-        $.eof
+        $.eof,
+        $._newline,
+        $._whitespace
     ],
 
     extras: $ => [
         $._whitespace,
         $._newline,
+        $.skip_comment_head,
+        $.skip_comment_line,
         $.block_comment,
         $.line_comment,
     ],
@@ -150,10 +154,6 @@ module.exports = grammar({
         source_file: $ => repeat($._decl),
 
         word: $ => token(allnames),
-
-        _whitespace: $ => token(repeat1(ws)),
-
-        _newline: $ => token(newline),
 
         _decl: $ => choice(
             $.kind_decl,
@@ -170,9 +170,7 @@ module.exports = grammar({
             $.constraint_section,
             $.shorten_decl,
             $.accumulate_decl,
-            $.local_decl,
-            // Skip comments can only appear at top level.
-            $.skip_comment
+            $.local_decl
         ),
 
         // Attributes
@@ -610,11 +608,6 @@ module.exports = grammar({
             $.start_block_comment,
             repeat($.block_comment_line),
             $.end_block_comment
-        ),
-
-        skip_comment: $ => seq(
-            $.skip_comment_head,
-            repeat($.skip_comment_line)
         ),
 
         line_comment: $ => token(prec(0, /%[^\n\r]*/)),
