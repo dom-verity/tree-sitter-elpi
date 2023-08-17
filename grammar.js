@@ -503,15 +503,6 @@ module.exports = grammar({
         io: $ => token(/i|o/),
         io_colon: $ => token(/(i|o):/),
 
-        // Names
-        ucname: $ => token(seq(ucase, repeat(idchar))),
-        lcname: $ => token(seq(lcase, repeat(idchar))),
-        uname: $ => token(seq('_', repeat1(idchar))),
-        qname: $ => token(seq('\'',  repeat(symbchar), '\'')),
-        bqname: $ => token(seq('`', repeat(symbchar), '`')),
-        atname: $ => token(seq('@', repeat(idchar))),
-        freshuv: $ => token('_'),
-
         _mixfix: $ => {
             const table = [
                 "cons", "eq", "minus", "minusr", "minusi", "minuss",
@@ -601,7 +592,17 @@ module.exports = grammar({
 
         as: $ => token("as"),
 
-        start_block_comment: $ => token('/*'),
+        // Names
+        ucname: $ => token(seq(ucase, repeat(idchar))),
+        lcname: $ => token(seq(lcase, repeat(idchar))),
+        uname: $ => token(seq('_', repeat1(idchar))),
+        qname: $ => token(seq('\'',  repeat(symbchar), '\'')),
+        bqname: $ => token(seq('`', repeat(symbchar), '`')),
+        atname: $ => token(seq('@', repeat(idchar))),
+        freshuv: $ => token('_'),
+
+        // Comments
+        start_block_comment: $ => token(/\/\*+/),
         end_block_comment: $ => token("*/"),
 
         block_comment: $ => seq(

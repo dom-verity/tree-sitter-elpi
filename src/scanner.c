@@ -2,7 +2,8 @@
  * Tree sitter grammar for the ELPI (https://github.com/LPCIC/elpi)
  * dialect of λProlog (https://www.lix.polytechnique.fr/~dale/lProlog/).
  *
- * File:            C scanner, implements skip comments and EOF.
+ * File:            C scanner: Implements the tricky parts of ELPI syntax
+ **                 like skip comments. Also implements an EOF token.
  *
  * Original Author: Dominic Verity <dominic.verity@anu.edu.au>
  * License:         GPL v3
@@ -55,7 +56,6 @@ enum TokenType {
         _a < _b ? _a : _b; })
 
 typedef struct {
-    unsigned line_no;
     unsigned lines_to_skip;
 } scanner_memo;
 
@@ -129,7 +129,6 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
             } else if (current == '\n') {
                 if (valid_symbols[END_OF_LINE]) {
                     lexer->result_symbol = END_OF_LINE;
-                    stored_state.line_no++;
                     if (stored_state.lines_to_skip > 0) {
                         stored_state.lines_to_skip--;
                     }

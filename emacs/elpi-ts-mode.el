@@ -392,26 +392,21 @@ START and END specify the region to be fontified."
 
 ;; Simple indentation rules
 
-(defun elpi-ts-mode--block-comment-style (node)
-  "Return nil if the block comment NODE should be indented as a doc-comment."
-  (and
-   (equal (line-number-at-pos
-           (treesit-node-start (treesit-node-child node 0)))
-          (line-number-at-pos
-           (treesit-node-start (treesit-node-child node 1))))
-   (not (string-prefix-p "*" (treesit-node-text (treesit-node-child node 1))))))
-
 (defun elpi-ts-mode--anchor-block-comment-line (node parent _b &rest _)
   "Indent NODE as a block comment line depending on style of PARENT."
-  (if (elpi-ts-mode--block-comment-style parent)
+  (if (equal (line-number-at-pos
+              (treesit-node-start (treesit-node-child node 0)))
+             (line-number-at-pos
+              (treesit-node-start (treesit-node-child node 1))))
       (treesit-node-start (treesit-node-child parent 1))
-    (if (string-prefix-p "*" (treesit-node-text node))
-        (+ (treesit-node-start parent) 1)
-      (treesit-node-start parent))))
+    (+ (treesit-node-start parent) 1)))
 
 (defun elpi-ts-mode--anchor-end-block-comment (_n parent _b &rest _)
   "Indent as an end block comment line depending on style of PARENT."
-  (if (elpi-ts-mode--block-comment-style parent)
+  (if (equal (line-number-at-pos
+              (treesit-node-start (treesit-node-child node 0)))
+             (line-number-at-pos
+              (treesit-node-start (treesit-node-child node 1))))
       (treesit-node-start parent)
     (+ (treesit-node-start parent) 1)))
 
