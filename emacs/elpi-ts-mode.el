@@ -293,6 +293,11 @@ START and END specify the region to be fontified."
   (when (equal (treesit-node-type node) "paren_term")
     `(,(treesit-node-child-by-field-name node "term"))))
 
+(defun elpi-ts-mode--unwrap-spilled-term (node)
+  "Unwrap a spilled_term NODE and return a list containing the term it wraps."
+  (when (equal (treesit-node-type node) "spilled_term")
+    `(,(treesit-node-child-by-field-name node "term"))))
+
 (defun elpi-ts-mode--defining-instances (node)
   "Get defining occurrences within a D-formula NODE."
   (pcase node
@@ -300,8 +305,13 @@ START and END specify the region to be fontified."
      (seq-difference (elpi-ts-mode--defining-instances body) params
                      (lambda (a b) (equal (treesit-node-text a)
                                           (treesit-node-text b)))))
-    ((app elpi-ts-mode--unwrap-app-term `(,left ,_))
-     (elpi-ts-mode--defining-instances left))
+    ((app elpi-ts-mode--unwrap-app-term `(,left ,right))
+     (pcase right
+       ((app elpi-ts-mode--unwrap-spilled-term `(,term))
+        (seq-concatenate 'list
+                         (elpi-ts-mode--defining-instances left)
+                         (elpi-ts-mode--defining-instances term)))
+       (_ (elpi-ts-mode--defining-instances left))))
     ((app elpi-ts-mode--unwrap-paren-term `(,term))
      (elpi-ts-mode--defining-instances term))
     ((pred elpi-ts-mode--unwrap-constant) `(,node))
@@ -341,7 +351,7 @@ START and END specify the region to be fontified."
                @elpi-constant-face))
    :language 'elpi
    :override t
-   :feature 'defining-instance
+   :feature 'defining-instances
    '((clause_decl clause: (_) @elpi-ts-mode--fontify-defining-instances)
      (pred_decl (constant) @elpi-defining-instance-face)
      (mode_decl (constant) @elpi-defining-instance-face))

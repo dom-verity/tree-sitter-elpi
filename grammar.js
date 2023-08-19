@@ -417,7 +417,7 @@ module.exports = grammar({
 
         params: $ => repeat1($.constant),
 
-        spilled_term: $ => prec.dynamic(0, seq($.lcurly, $._term, $.rcurly)),
+        spilled_term: $ => prec.dynamic(0, seq($.lcurly, field("term", $._term), $.rcurly)),
 
         paren_term: $ => seq($.lparen, field("term", $._term), $.rparen),
 
