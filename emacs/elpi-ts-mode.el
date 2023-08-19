@@ -21,7 +21,7 @@
 ;; Copyright (C) 1986-1987, 1997-1999, 2002-2003, 2011-2023 Free
 ;; Software Foundation, Inc.
 
-(defvar elpi-ts-mode-version "1.22"
+(defvar elpi-ts-mode-version "1.0"
   "ELPI mode version number.")
 
 ;; This file is part of tree-sitter-elpi.
@@ -110,20 +110,20 @@
 (defface elpi-escape-face
   '((t . (:inherit font-lock-escape-face)))
   "Face for escape sequences in ELPI mode.")
-(defface elpi-applied-occurrence-face
+(defface elpi-bound-variable-face
   '((t . (:inherit font-lock-variable-name-face)))
-  "Face for applied occurrences of parameters in ELPI mode.")
-(defface elpi-defining-occurrence-face
+  "Face for applied instances of bound variables in ELPI mode.")
+(defface elpi-parameter-face
   '((t . (:inherit font-lock-variable-name-face
           :underline "firebrick")))
-  "Face for defining occurrences of parameters in ELPI mode.")
+  "Face for parameters of abstractions in ELPI mode.")
 (defface elpi-constant-face
   '((t . (:inherit font-lock-constant-face)))
   "Face for constant identifiers in ELPI mode.")
-(defface elpi-clause-head-face
+(defface elpi-defining-instance-face
   '((t . (:inherit font-lock-constant-face
           :underline "firebrick")))
-  "Face for head identifiers of clauses in ELPI mode.")
+  "Face for defining instances within clauses in ELPI mode.")
 (defface elpi-keyword-face
   '((t . (:inherit font-lock-keyword-face)))
   "Face for keywords in ELPI mode.")
@@ -250,26 +250,69 @@ START and END specify the region to be fontified."
   (when (elpi-ts-mode--find-binding node)
     (treesit-fontify-with-override (treesit-node-start node)
                                    (treesit-node-end node)
-                                   'elpi-applied-occurrence-face
+                                   'elpi-bound-variable-face
                                    override start end)))
 
-(defun elpi-ts-mode--fontify-clause-head (node override start end &rest _)
-  "Fontify the head of a clause, by traversing its spine from NODE.
+(defun elpi-ts-mode--fontify-defining-instances (node override start end &rest _)
+  "Fontify the defining instances within a clause NODE.
 OVERRIDE is the face override option of the calling font lock rule.
 START and END specify the region to be fontified."
-  (while
-      (let ((ntype (treesit-node-type node)))
-       (cond
-        ((equal ntype "constant")
-         (treesit-fontify-with-override (treesit-node-start node)
-                                        (treesit-node-end node)
-                                        'elpi-clause-head-face
-                                        override start end) nil)
-        ((equal ntype "app_term")
-         (setq node (treesit-node-child-by-field-name node "left")) t)
-        ((equal ntype "paren_term")
-         (setq node (treesit-node-child-by-field-name node "term")) t)
-        (nil)))))
+  (dolist (n (elpi-ts-mode--defining-instances node))
+    (treesit-fontify-with-override (treesit-node-start n)
+                                   (treesit-node-end n)
+                                   'elpi-defining-instance-face
+                                   override start end)))
+
+(defun elpi-ts-mode--unwrap-multi-bind (node)
+  "Unwrap a milti_bind NODE and return a list representing its children."
+  (when (equal (treesit-node-type node) "multi_bind")
+    `(,(treesit-node-type (treesit-node-child node 0))
+      ,(treesit-node-children (treesit-node-child-by-field-name node "left"))
+      ,(treesit-node-child-by-field-name node "right"))))
+
+(defun elpi-ts-mode--unwrap-app-term (node)
+  "Unwrap an app_term NODE and return a list representing its children."
+  (when (equal (treesit-node-type node) "app_term")
+    `(,(treesit-node-child-by-field-name node "left")
+      ,(treesit-node-child-by-field-name node "right"))))
+
+(defun elpi-ts-mode--unwrap-constant (node)
+  "Unwrap a constant NODE and return a list containing its name."
+  (when (equal (treesit-node-type node) "constant")
+    `(,(treesit-node-text node))))
+
+(defun elpi-ts-mode--unwrap-infix-term (node)
+  "Unwrap an infix_term NODE and return a list representing its children."
+  (when (equal (treesit-node-type node) "infix_term")
+    `(,(treesit-node-type (treesit-node-child-by-field-name node "op"))
+      ,(treesit-node-child-by-field-name node "left")
+      ,(treesit-node-child-by-field-name node "right"))))
+
+(defun elpi-ts-mode--unwrap-paren-term (node)
+  "Unwrap a paren_term NODE and return a list containing the term it wraps."
+  (when (equal (treesit-node-type node) "paren_term")
+    `(,(treesit-node-child-by-field-name node "term"))))
+
+(defun elpi-ts-mode--defining-instances (node)
+  "Get defining occurrences within a D-formula NODE."
+  (pcase node
+    ((app elpi-ts-mode--unwrap-multi-bind `(,"pi" ,params ,body))
+     (seq-difference (elpi-ts-mode--defining-instances body) params
+                     (lambda (a b) (equal (treesit-node-text a)
+                                          (treesit-node-text b)))))
+    ((app elpi-ts-mode--unwrap-app-term `(,left ,_))
+     (elpi-ts-mode--defining-instances left))
+    ((app elpi-ts-mode--unwrap-paren-term `(,term))
+     (elpi-ts-mode--defining-instances term))
+    ((pred elpi-ts-mode--unwrap-constant) `(,node))
+    ((app elpi-ts-mode--unwrap-infix-term `(,op ,left ,right))
+     (pcase op
+       ((or "as" "vdash") (elpi-ts-mode--defining-instances left))
+       ("darrow" (elpi-ts-mode--defining-instances right))
+       ((or "conj" "conj2")
+        (seq-concatenate 'list
+                         (elpi-ts-mode--defining-instances left)
+                         (elpi-ts-mode--defining-instances right)))))))
 
 ;; Font-locking rules
 
@@ -288,8 +331,8 @@ START and END specify the region to be fontified."
    :language 'elpi
    :override t
    :feature 'lambda-parameter
-   '((abs_term left: (constant (_) @elpi-defining-occurrence-face))
-     (multi_bind (params (constant (_) @elpi-defining-occurrence-face)))
+   '((abs_term left: (constant (_) @elpi-parameter-face))
+     (multi_bind (params (constant (_) @elpi-parameter-face)))
      (constant) @elpi-ts-mode--fontify-bound-variable)
    :language 'elpi
    :override t
@@ -298,16 +341,10 @@ START and END specify the region to be fontified."
                @elpi-constant-face))
    :language 'elpi
    :override t
-   :feature 'clause-head
-   '((clause_decl
-      (infix_term
-       left: ([(app_term) @elpi-ts-mode--fontify-clause-head
-               (constant) @elpi-clause-head-face])
-       op: (vdash)))
-     (clause_decl[(app_term) @elpi-ts-mode--fontify-clause-head
-                  (constant) @elpi-clause-head-face])
-     (pred_decl (constant) @elpi-clause-head-face)
-     (mode_decl (constant) @elpi-clause-head-face))
+   :feature 'defining-instance
+   '((clause_decl clause: (_) @elpi-ts-mode--fontify-defining-instances)
+     (pred_decl (constant) @elpi-defining-instance-face)
+     (mode_decl (constant) @elpi-defining-instance-face))
 
    ;; Non-overriding rules
    :language 'elpi
@@ -393,21 +430,14 @@ START and END specify the region to be fontified."
 ;; Simple indentation rules
 
 (defun elpi-ts-mode--anchor-block-comment-line (node parent _b &rest _)
-  "Indent NODE as a block comment line depending on style of PARENT."
+  "Indent NODE as a block comment line, depending on first line of PARENT."
   (if (equal (line-number-at-pos
-              (treesit-node-start (treesit-node-child node 0)))
+              (treesit-node-start (treesit-node-child parent 0)))
              (line-number-at-pos
-              (treesit-node-start (treesit-node-child node 1))))
-      (treesit-node-start (treesit-node-child parent 1))
-    (+ (treesit-node-start parent) 1)))
-
-(defun elpi-ts-mode--anchor-end-block-comment (_n parent _b &rest _)
-  "Indent as an end block comment line depending on style of PARENT."
-  (if (equal (line-number-at-pos
-              (treesit-node-start (treesit-node-child node 0)))
-             (line-number-at-pos
-              (treesit-node-start (treesit-node-child node 1))))
-      (treesit-node-start parent)
+              (treesit-node-start (treesit-node-child parent 1))))
+      (if (equal (treesit-node-type node) "end_block_comment")
+          (treesit-node-start parent)
+        (treesit-node-start (treesit-node-child parent 1)))
     (+ (treesit-node-start parent) 1)))
 
 (defvar elpi-ts-mode--indent-rules
@@ -416,7 +446,7 @@ START and END specify the region to be fontified."
      ;; Block comments
      ((node-is "start_block_comment") parent-bol 0)
      ((node-is "block_comment_line") elpi-ts-mode--anchor-block-comment-line 0)
-     ((node-is "end_block_comment") elpi-ts-mode--anchor-end-block-comment 0)
+     ((node-is "end_block_comment") elpi-ts-mode--anchor-block-comment-line 0)
      ;; Program and name-space sections
      ((node-is "prog_begin") parent-bol 0)
      ((node-is "prog_end") parent-bol 0)
@@ -445,7 +475,7 @@ START and END specify the region to be fontified."
                                      operator-builtin label constant-builtin
                                      type-builtin)
                 (variable wildcard constant macro lambda-parameter
-                          clause-head)))
+                          defining-instances)))
 
   ;; Indentation
   (setq-local treesit-simple-indent-rules elpi-ts-mode--indent-rules)

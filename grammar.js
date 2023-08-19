@@ -263,7 +263,7 @@ module.exports = grammar({
 
         // Clause declarations, the syntax of these is a subset of term syntax.
         clause_decl: $ => seq(
-            optional($.attributes), $._term, $._terminator
+            optional($.attributes), field("clause", $._term), $._terminator
         ),
 
         // Macro declarations

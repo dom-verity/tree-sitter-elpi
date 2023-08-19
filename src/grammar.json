@@ -934,8 +934,12 @@
           ]
         },
         {
-          "type": "SYMBOL",
-          "name": "_term"
+          "type": "FIELD",
+          "name": "clause",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_term"
+          }
         },
         {
           "type": "SYMBOL",
