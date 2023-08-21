@@ -204,7 +204,51 @@
   '(lparen rparen lcurly rcurly lbracket rbracket
            prog_begin prog_end)
   "ELPI bracket nodes for tree-sitter font locking."
-)
+  )
+
+;; Functions to "unwrap" nodes of various kinds and make their
+;; children available for pattern matching in a pcase block.
+
+(defun elpi-ts-mode--unwrap-multi-bind (node)
+  "Unwrap a milti_bind NODE and return a list representing its children."
+  (when (equal (treesit-node-type node) "multi_bind")
+    `(,(treesit-node-type (treesit-node-child node 0))
+      ,(treesit-node-children (treesit-node-child-by-field-name node "left"))
+      ,(treesit-node-child-by-field-name node "right"))))
+
+(defun elpi-ts-mode--unwrap-app-term (node)
+  "Unwrap an app_term NODE and return a list representing its children."
+  (when (equal (treesit-node-type node) "app_term")
+    `(,(treesit-node-child-by-field-name node "left")
+      ,(treesit-node-child-by-field-name node "right"))))
+
+(defun elpi-ts-mode--unwrap-constant (node)
+  "Unwrap a constant NODE and return a list containing its name."
+  (when (equal (treesit-node-type node) "constant")
+    `(,(treesit-node-text node))))
+
+(defun elpi-ts-mode--unwrap-infix-term (node)
+  "Unwrap an infix_term NODE and return a list containing its children."
+  (when (equal (treesit-node-type node) "infix_term")
+    `(,(treesit-node-type (treesit-node-child-by-field-name node "op"))
+      ,(treesit-node-child-by-field-name node "left")
+      ,(treesit-node-child-by-field-name node "right"))))
+
+(defun elpi-ts-mode--unwrap-paren-term (node)
+  "Unwrap a paren_term NODE and return a list containing the term it wraps."
+  (when (equal (treesit-node-type node) "paren_term")
+    `(,(treesit-node-child-by-field-name node "term"))))
+
+(defun elpi-ts-mode--unwrap-spilled-term (node)
+  "Unwrap a spilled_term NODE and return a list containing the term it wraps."
+  (when (equal (treesit-node-type node) "spilled_term")
+    `(,(treesit-node-child-by-field-name node "term"))))
+
+(defun elpi-ts-mode-unwrap-app-term (node)
+  "Unwrap an app_term NODE and return a list containing its children."
+  (when (equal (treesit-node-type node) "app_term")
+    `(,(treesit-node-child-by-field-name node "left")
+      ,(treesit-node-child-by-field-name node "right"))))
 
 ;; Functions to implement more complex font-locking, such as determining
 ;; occurrences of bound variables so that they may be assigned a
@@ -263,41 +307,6 @@ START and END specify the region to be fontified."
                                    'elpi-defining-instance-face
                                    override start end)))
 
-(defun elpi-ts-mode--unwrap-multi-bind (node)
-  "Unwrap a milti_bind NODE and return a list representing its children."
-  (when (equal (treesit-node-type node) "multi_bind")
-    `(,(treesit-node-type (treesit-node-child node 0))
-      ,(treesit-node-children (treesit-node-child-by-field-name node "left"))
-      ,(treesit-node-child-by-field-name node "right"))))
-
-(defun elpi-ts-mode--unwrap-app-term (node)
-  "Unwrap an app_term NODE and return a list representing its children."
-  (when (equal (treesit-node-type node) "app_term")
-    `(,(treesit-node-child-by-field-name node "left")
-      ,(treesit-node-child-by-field-name node "right"))))
-
-(defun elpi-ts-mode--unwrap-constant (node)
-  "Unwrap a constant NODE and return a list containing its name."
-  (when (equal (treesit-node-type node) "constant")
-    `(,(treesit-node-text node))))
-
-(defun elpi-ts-mode--unwrap-infix-term (node)
-  "Unwrap an infix_term NODE and return a list representing its children."
-  (when (equal (treesit-node-type node) "infix_term")
-    `(,(treesit-node-type (treesit-node-child-by-field-name node "op"))
-      ,(treesit-node-child-by-field-name node "left")
-      ,(treesit-node-child-by-field-name node "right"))))
-
-(defun elpi-ts-mode--unwrap-paren-term (node)
-  "Unwrap a paren_term NODE and return a list containing the term it wraps."
-  (when (equal (treesit-node-type node) "paren_term")
-    `(,(treesit-node-child-by-field-name node "term"))))
-
-(defun elpi-ts-mode--unwrap-spilled-term (node)
-  "Unwrap a spilled_term NODE and return a list containing the term it wraps."
-  (when (equal (treesit-node-type node) "spilled_term")
-    `(,(treesit-node-child-by-field-name node "term"))))
-
 (defun elpi-ts-mode--defining-instances (node)
   "Get defining occurrences within a D-formula NODE."
   (pcase node
@@ -354,8 +363,9 @@ START and END specify the region to be fontified."
    :feature 'defining-instances
    '((clause_decl clause: (_) @elpi-ts-mode--fontify-defining-instances)
      (pred_decl (constant) @elpi-defining-instance-face)
-     (mode_decl (constant) @elpi-defining-instance-face))
-
+     (mode_decl (constant) @elpi-defining-instance-face)
+     (kind_decl (constant) @elpi-defining-instance-face)
+     (type_decl (constant) @elpi-defining-instance-face))
    ;; Non-overriding rules
    :language 'elpi
    :override nil
@@ -439,20 +449,98 @@ START and END specify the region to be fontified."
 
 ;; Simple indentation rules
 
+(defvar elpi-ts-mode--op-type-regex
+  (rx
+   string-start
+   (or "infix_term" "prefix_term" "postfix_term")
+   string-end)
+  "Regex to match the type of an operator node.")
+
+(defvar elpi-ts-mode--term-type-regex
+  (rx
+   string-start
+   (or "infix_term" "prefix_term" "postfix_term" "app_term"
+       "abs_term" "multi_bind" "list_term" "spilled_term"
+       "cut" "pi" "sigma" "constant" "integer" "float"
+       "string" "paren_term")
+   string-end)
+  "Regex to match the type of any term node.")
+
+(defun elpi-ts-mode--adjacentp (node1 node2)
+  "Test whether the end of NODE1 and the start of NODE2 are on the same line."
+  (equal (line-number-at-pos (treesit-node-end node1))
+         (line-number-at-pos (treesit-node-start node2))))
+
 (defun elpi-ts-mode--anchor-block-comment-line (node parent _b &rest _)
   "Indent NODE as a block comment line, depending on first line of PARENT."
-  (if (equal (line-number-at-pos
-              (treesit-node-start (treesit-node-child parent 0)))
-             (line-number-at-pos
-              (treesit-node-start (treesit-node-child parent 1))))
+  (if (elpi-ts-mode--adjacentp (treesit-node-child parent 0)
+                               (treesit-node-child parent 1))
       (if (equal (treesit-node-type node) "end_block_comment")
           (treesit-node-start parent)
         (treesit-node-start (treesit-node-child parent 1)))
     (+ (treesit-node-start parent) 1)))
 
+(defun elpi-ts-mode--named-sibling-type (name type)
+  "Test whether TYPE is the type of sibling of current node named NAME."
+  (lambda (_ parent &rest _)
+    (equal (treesit-node-type
+            (treesit-node-child-by-field-name parent name))
+           type)))
+
+(defun elpi-ts-mode--app-term-params-start (_ parent &rest _)
+  "Get the start position the first parameter of an applicative PARENT term.
+Assumes that the current node is the right child of an \"app_term\" node."
+  (let ((left-child (treesit-node-child-by-field-name parent "left")))
+    (while (equal (treesit-node-type left-child) "app_term")
+      (setq parent left-child)
+      (setq left-child (treesit-node-child-by-field-name parent "left")))
+    (treesit-node-start (treesit-node-child-by-field-name parent "right"))))
+
+(defun elpi-ts-mode--head-of-expr-p (node parent &rest _)
+  "Test if NODE (a child of PARENT) is at the head of an expression."
+  (while
+      (or
+       (and (equal (treesit-node-type parent) "infix_term")
+            (equal (treesit-node-child-by-field-name parent "left") node))
+       (and (equal (treesit-node-type parent) "prefix_term")
+            (equal (treesit-node-child-by-field-name parent "op") node))
+       (and (equal (treesit-node-type parent) "postfix_term")
+            (equal (treesit-node-child-by-field-name parent "exp") node)))
+    (setq node parent)
+    (setq parent (treesit-node-parent node)))
+  (not
+   (string-match-p elpi-ts-mode--op-type-regex
+                   (or (treesit-node-type parent) ""))))
+
+(defun elpi-ts-mode--head-of-expr-start (node parent &rest _)
+  "NODE PARENT."
+  (while (string-match-p elpi-ts-mode--op-type-regex
+                         (or (treesit-node-type parent) ""))
+    (setq node parent)
+    (setq parent (treesit-node-parent node)))
+  (treesit-node-start node))
+
 (defvar elpi-ts-mode--indent-rules
   `((elpi
+     ;; Note: In situations in which two rules in this list match the same
+     ;; node, only the earlier of those two rules is applied.
      ((parent-is "source_file") column-0 0)
+     ;; Parameters of applicative terms
+     ((and
+       (match nil "app_term" "right" nil nil)
+       (not (elpi-ts-mode--named-sibling-type "left" "app_term")))
+      parent  elpi-ts-mode-indent-offset)
+     ((match nil "app_term" "right" nil nil)
+      elpi-ts-mode--app-term-params-start 0)
+     ;; Expressions within a infix / prefix / postfix term
+     ((and
+       (or
+        (node-is ,elpi-ts-mode--term-type-regex)
+        (field-is "op"))
+       (not elpi-ts-mode--head-of-expr-p))
+      elpi-ts-mode--head-of-expr-start elpi-ts-mode-indent-offset)
+     ;; Indenting declarations
+     ((parent-is "kind_term") parent-bol elpi-ts-mode-indent-offset)
      ;; Block comments
      ((node-is "start_block_comment") parent-bol 0)
      ((node-is "block_comment_line") elpi-ts-mode--anchor-block-comment-line 0)
