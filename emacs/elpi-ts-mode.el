@@ -456,6 +456,20 @@ START and END specify the region to be fontified."
    string-end)
   "Regex to match the type of an operator node.")
 
+(defvar elpi-ts-mode--binder-type-regex
+  (rx
+   string-start
+   (or "abs_term" "multi_bind")
+   string-end)
+  "Regex to match the type of a binder node.")
+
+(defvar elpi-ts-mode--op-or-binder-type-regex
+  (rx
+   string-start
+   (or "abs_term" "multi_bind" "infix_term" "prefix_term" "postfix_term")
+   string-end)
+  "Regex to match the type of an operator or binder node.")
+
 (defvar elpi-ts-mode--term-type-regex
   (rx
    string-start
@@ -466,19 +480,14 @@ START and END specify the region to be fontified."
    string-end)
   "Regex to match the type of any term node.")
 
-(defun elpi-ts-mode--adjacentp (node1 node2)
-  "Test whether the end of NODE1 and the start of NODE2 are on the same line."
-  (equal (line-number-at-pos (treesit-node-end node1))
-         (line-number-at-pos (treesit-node-start node2))))
-
-(defun elpi-ts-mode--anchor-block-comment-line (node parent _b &rest _)
-  "Indent NODE as a block comment line, depending on first line of PARENT."
-  (if (elpi-ts-mode--adjacentp (treesit-node-child parent 0)
-                               (treesit-node-child parent 1))
-      (if (equal (treesit-node-type node) "end_block_comment")
-          (treesit-node-start parent)
-        (treesit-node-start (treesit-node-child parent 1)))
-    (+ (treesit-node-start parent) 1)))
+(defun elpi-ts-mode--nth-sibling-bol (nth &optional named)
+  "Return position of the first non-space character on the line of NTH sibling.
+If NAMED is true then ignored children without names."
+  (lambda (_ parent &rest _)
+    (save-excursion
+    (goto-char (treesit-node-start (treesit-node-child parent nth named)))
+    (back-to-indentation)
+    (point))))
 
 (defun elpi-ts-mode--named-sibling-type (name type)
   "Test whether TYPE is the type of sibling of current node named NAME."
@@ -496,34 +505,59 @@ Assumes that the current node is the right child of an \"app_term\" node."
       (setq left-child (treesit-node-child-by-field-name parent "left")))
     (treesit-node-start (treesit-node-child-by-field-name parent "right"))))
 
-(defun elpi-ts-mode--head-of-expr-p (node parent &rest _)
-  "Test if NODE (a child of PARENT) is at the head of an expression."
-  (while
-      (or
-       (and (equal (treesit-node-type parent) "infix_term")
-            (equal (treesit-node-child-by-field-name parent "left") node))
-       (and (equal (treesit-node-type parent) "prefix_term")
-            (equal (treesit-node-child-by-field-name parent "op") node))
-       (and (equal (treesit-node-type parent) "postfix_term")
-            (equal (treesit-node-child-by-field-name parent "exp") node)))
-    (setq node parent)
-    (setq parent (treesit-node-parent node)))
-  (not
-   (string-match-p elpi-ts-mode--op-type-regex
-                   (or (treesit-node-type parent) ""))))
-
-(defun elpi-ts-mode--head-of-expr-start (node parent &rest _)
-  "NODE PARENT."
+(defun elpi-ts-mode--anchor-expr-subterm (node parent &rest _)
+  "Find anchor for child NODE of PARENT within an operator / binder expression."
   (while (string-match-p elpi-ts-mode--op-type-regex
                          (or (treesit-node-type parent) ""))
     (setq node parent)
     (setq parent (treesit-node-parent node)))
+  (save-excursion
+   (while (and
+           (string-match-p elpi-ts-mode--binder-type-regex
+                           (or (treesit-node-type parent) ""))
+           (progn
+             (setq node parent)
+             (setq parent (treesit-node-parent node))
+             (goto-char (treesit-node-start parent))
+             (not (looking-back (rx bol (* whitespace))
+                                (line-beginning-position)))))))
   (treesit-node-start node))
+
+(defun elpi-ts-mode--anchor-comment (node &rest _)
+  "Anchor to immediately following non-empty line after NODE."
+  (save-excursion
+    (goto-char (treesit-node-end node))
+    (forward-line)
+    (if (re-search-forward (rx (not blank)) (line-end-position) t)
+        (match-beginning 0)
+      nil)))
 
 (defvar elpi-ts-mode--indent-rules
   `((elpi
      ;; Note: In situations in which two rules in this list match the same
      ;; node, only the earlier of those two rules is applied.
+     ;;
+     ;; Empty lines
+     (no-node column-0 0)
+     ;; Comments, come early since they can occur anywhere in the tree
+     ;; and we want to avoid them being handled by more specific rules later.
+     ((and
+       (node-is
+        ,(rx string-start
+             (or "block_comment" "line_comment" "skip_comment_head")
+             string-end))
+       elpi-ts-mode--anchor-comment)
+      elpi-ts-mode--anchor-comment 0)
+     ((node-is "skip_comment_line") no-indent 0)
+     ((node-is "start_block_comment") parent 0)
+     ((match ,(rx string-start
+                  (or "end_block_comment" "block_comment_line")
+                  string-end)
+             nil nil 1 1)
+      (nth-sibling 0) 1)
+     ((node-is "block_comment_line") (nth-sibling 1) 0)
+     ((node-is "end_block_comment") (elpi-ts-mode--nth-sibling-bol 1) 0)
+     ;; Root node.
      ((parent-is "source_file") column-0 0)
      ;; Parameters of applicative terms
      ((and
@@ -532,19 +566,15 @@ Assumes that the current node is the right child of an \"app_term\" node."
       parent  elpi-ts-mode-indent-offset)
      ((match nil "app_term" "right" nil nil)
       elpi-ts-mode--app-term-params-start 0)
-     ;; Expressions within a infix / prefix / postfix term
-     ((and
-       (or
-        (node-is ,elpi-ts-mode--term-type-regex)
-        (field-is "op"))
-       (not elpi-ts-mode--head-of-expr-p))
-      elpi-ts-mode--head-of-expr-start elpi-ts-mode-indent-offset)
+     ;; Parameters of a multi-bind.
+
+     ;; Sub-terms within an expression.
+     ((or (field-is "op")
+          (match ,elpi-ts-mode--term-type-regex
+                 ,elpi-ts-mode--op-or-binder-type-regex))
+      elpi-ts-mode--anchor-expr-subterm elpi-ts-mode-indent-offset)
      ;; Indenting declarations
      ((parent-is "kind_term") parent-bol elpi-ts-mode-indent-offset)
-     ;; Block comments
-     ((node-is "start_block_comment") parent-bol 0)
-     ((node-is "block_comment_line") elpi-ts-mode--anchor-block-comment-line 0)
-     ((node-is "end_block_comment") elpi-ts-mode--anchor-block-comment-line 0)
      ;; Program and name-space sections
      ((node-is "prog_begin") parent-bol 0)
      ((node-is "prog_end") parent-bol 0)
