@@ -4940,13 +4940,6 @@
         "value": "_"
       }
     },
-    "start_block_comment": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PATTERN",
-        "value": "\\/\\*+"
-      }
-    },
     "end_block_comment": {
       "type": "TOKEN",
       "content": {
@@ -5146,6 +5139,10 @@
     {
       "type": "SYMBOL",
       "name": "skip_comment_line"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "start_block_comment"
     },
     {
       "type": "SYMBOL",

@@ -129,6 +129,7 @@ module.exports = grammar({
     externals: $ => [
         $.skip_comment_head,
         $.skip_comment_line,
+        $.start_block_comment,
         $.block_comment_line,
         $.eof,
         $._newline,
@@ -602,7 +603,6 @@ module.exports = grammar({
         freshuv: $ => token('_'),
 
         // Comments
-        start_block_comment: $ => token(/\/\*+/),
         end_block_comment: $ => token("*/"),
 
         block_comment: $ => seq(

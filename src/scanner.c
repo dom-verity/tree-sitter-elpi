@@ -39,6 +39,7 @@
 enum TokenType {
     SKIP_COMMENT_HEAD,
     SKIP_COMMENT_LINE,
+    START_BLOCK_COMMENT,
     BLOCK_COMMENT_LINE,
     END_OF_FILE,
     END_OF_LINE,
@@ -92,7 +93,7 @@ const int MAX_DIGITS = 5;
 int current = 0;
 bool eof = false;
 
-void advance(TSLexer *lexer) {
+static void advance(TSLexer *lexer) {
     current = lexer->lookahead;
     eof = lexer->eof(lexer);
     if (!eof) {
@@ -151,6 +152,11 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
                 lexer->mark_end(lexer);
                 lexer->result_symbol = SKIP_COMMENT_LINE;
                 state = 16;
+            } else if (valid_symbols[START_BLOCK_COMMENT] &&
+                       current == '/') {
+                lexer->mark_end(lexer);
+                lexer->result_symbol = START_BLOCK_COMMENT;
+                state = 20;
             } else if (valid_symbols[BLOCK_COMMENT_LINE] &&
                        !eof && !isspace(current)) {
                 lexer->result_symbol = BLOCK_COMMENT_LINE;
@@ -331,6 +337,32 @@ bool tree_sitter_elpi_external_scanner_scan(void *payload,
                 nonempty = true;
                 lexer->mark_end(lexer);
                 state = 18;
+            }
+            break;
+        case 20: // States to process start block comment
+            advance(lexer);
+            if (current == '*') {
+                lexer->mark_end(lexer);
+                state = 21;
+            } else {
+                state = ERROR_STATE;
+            }
+            break;
+        case 21:
+            advance(lexer);
+            if (current == '*') {
+                state = 22;
+            } else {
+                lexer->mark_end(lexer);
+                state = END_STATE;
+            }
+            break;
+        case 22:
+            if (lexer->lookahead == '/') { // peek ahead
+                state = END_STATE;
+            } else {
+                lexer->mark_end(lexer);
+                state = 21;
             }
             break;
         }
