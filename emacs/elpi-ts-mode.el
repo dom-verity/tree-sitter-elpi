@@ -111,10 +111,12 @@
   '((t . (:inherit font-lock-escape-face)))
   "Face for escape sequences in ELPI mode.")
 (defface elpi-bound-variable-face
-  '((t . (:inherit font-lock-variable-name-face)))
+  '((t . (:inherit font-lock-variable-name-face
+          :foreground "purple")))
   "Face for applied instances of bound variables in ELPI mode.")
 (defface elpi-parameter-face
   '((t . (:inherit font-lock-variable-name-face
+          :foreground "purple"
           :underline "firebrick")))
   "Face for parameters of abstractions in ELPI mode.")
 (defface elpi-constant-face
@@ -505,23 +507,45 @@ Assumes that the current node is the right child of an \"app_term\" node."
       (setq left-child (treesit-node-child-by-field-name parent "left")))
     (treesit-node-start (treesit-node-child-by-field-name parent "right"))))
 
-(defun elpi-ts-mode--anchor-expr-subterm (node parent &rest _)
-  "Find anchor for child NODE of PARENT within an operator / binder expression."
-  (while (string-match-p elpi-ts-mode--op-type-regex
-                         (or (treesit-node-type parent) ""))
+(defun elpi-ts-mode--enclosing-expr-on-line (node regex)
+  "NODE REGEX."
+  (let ((parent (treesit-node-parent node))
+        (bol (save-excursion
+               (goto-char (treesit-node-start node))
+               (forward-line 0)
+               (point))))
+    (while (and (string-match-p regex (or (treesit-node-type parent) ""))
+                (<= bol (treesit-node-start parent)))
     (setq node parent)
     (setq parent (treesit-node-parent node)))
-  (save-excursion
-   (while (and
-           (string-match-p elpi-ts-mode--binder-type-regex
-                           (or (treesit-node-type parent) ""))
-           (progn
-             (setq node parent)
-             (setq parent (treesit-node-parent node))
-             (goto-char (treesit-node-start parent))
-             (not (looking-back (rx bol (* whitespace))
-                                (line-beginning-position)))))))
-  (treesit-node-start node))
+    node))
+
+(defun elpi-ts-mode--indent-as-standalone-body-p (_ parent &rest _)
+  "Indent current sub-expression of PARENT as 1st line of binder body."
+  (string-match-p
+   elpi-ts-mode--binder-type-regex
+   (or (treesit-node-type parent) "")))
+
+(defun elpi-ts-mode--anchor-standalone-body (_ parent &rest _)
+  "Anchor current sub-expression of PARENT to head binder."
+  (treesit-node-start
+   (elpi-ts-mode--enclosing-expr-on-line parent elpi-ts-mode--binder-type-regex)))
+
+(defun elpi-ts-mode--indent-as-op-expr-second-line-p (_ parent &rest _)
+  "Indent current sub-expression of PARENT as 2nd line of operator expression."
+  (not (string-match-p
+        elpi-ts-mode--op-or-binder-type-regex
+        (or (treesit-node-type
+             (treesit-node-parent
+              (elpi-ts-mode--enclosing-expr-on-line
+               parent
+               elpi-ts-mode--op-type-regex)))
+            ""))))
+
+(defun elpi-ts-mode--anchor-op-expr-line (_ parent &rest _)
+  "Anchor current sub-expression of PARENT to previous line of op expression."
+  (treesit-node-start
+   (elpi-ts-mode--enclosing-expr-on-line parent elpi-ts-mode--op-type-regex)))
 
 (defun elpi-ts-mode--anchor-comment (node &rest _)
   "Anchor to immediately following non-empty line after NODE."
@@ -561,18 +585,32 @@ Assumes that the current node is the right child of an \"app_term\" node."
      ((parent-is "source_file") column-0 0)
      ;; Parameters of applicative terms
      ((and
-       (match nil "app_term" "right" nil nil)
+       (match nil "app_term" "right")
        (not (elpi-ts-mode--named-sibling-type "left" "app_term")))
       parent  elpi-ts-mode-indent-offset)
-     ((match nil "app_term" "right" nil nil)
-      elpi-ts-mode--app-term-params-start 0)
+     ((match nil "app_term" "right") elpi-ts-mode--app-term-params-start 0)
      ;; Parameters of a multi-bind.
 
      ;; Sub-terms within an expression.
+     ((and
+       (or (field-is "op")
+           (node-is ,elpi-ts-mode--term-type-regex))
+       elpi-ts-mode--indent-as-standalone-body-p)
+      elpi-ts-mode--anchor-standalone-body elpi-ts-mode-indent-offset)
+     ((and
+       (or (field-is "op")
+           (node-is ,elpi-ts-mode--term-type-regex))
+       elpi-ts-mode--indent-as-op-expr-second-line-p)
+      elpi-ts-mode--anchor-op-expr-line elpi-ts-mode-indent-offset)
      ((or (field-is "op")
-          (match ,elpi-ts-mode--term-type-regex
-                 ,elpi-ts-mode--op-or-binder-type-regex))
-      elpi-ts-mode--anchor-expr-subterm elpi-ts-mode-indent-offset)
+          (node-is ,elpi-ts-mode--term-type-regex))
+      elpi-ts-mode--anchor-op-expr-line 0)
+     ((match "rparen" "paren_term") parent 0)
+     ((match "rcurly" "spilled_term") parent 0)
+     ((parent-is ,(rx string-start
+                      (or "paren_term" "spilled_term")
+                      string-end))
+      parent elpi-ts-mode-indent-offset)
      ;; Indenting declarations
      ((parent-is "kind_term") parent-bol elpi-ts-mode-indent-offset)
      ;; Program and name-space sections
