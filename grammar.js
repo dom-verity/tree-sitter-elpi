@@ -368,7 +368,8 @@ module.exports = grammar({
             $.integer,
             $.float,
             $.string,
-            $.paren_term
+            $.paren_term,
+            $.missing
         ),
 
         closed_term: $ => $._atomic_term,
@@ -635,5 +636,11 @@ module.exports = grammar({
             )),
             token.immediate('"')
         ),
+
+        // Missing nodes - for example these can be appear in places
+        // where an atomic term would otherwise occur. Given the lowest
+        // precedence (and placed at the end of this grammar) because
+        // we only want this to be a token of last resort.
+        missing: $ => token(prec(-100, ""))
     }
 });
