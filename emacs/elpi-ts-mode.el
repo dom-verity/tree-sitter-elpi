@@ -590,8 +590,17 @@ Assumes that the current node is the right child of an \"app_term\" node."
       parent  elpi-ts-mode-indent-offset)
      ((match nil "app_term" "right") elpi-ts-mode--app-term-params-start 0)
      ;; Parameters of a multi-bind.
-
-     ;; Sub-terms within an expression.
+     ((node-is "params") parent elpi-ts-mode-indent-offset)
+     ((parent-is "params") parent 0)
+     ;; Lists and brackets
+     ((match "\\(l\\|r\\)paren" "paren_term") parent 0)
+     ((match "\\(l\\|r\\)curly" "spilled_term") parent 0)
+     ((match "\\(l\\|r\\)bracket\\|pipe\\|comma" "list_term") parent 0)
+     ((parent-is "\\(paren\\|spilled\\)_term")
+      parent elpi-ts-mode-indent-offset)
+     ((match nil "list_term" nil 1 1) parent elpi-ts-mode-indent-offset)
+     ((parent-is "list_term") (nth-sibling 1) 0)
+     ;; Sub-terms within an operator expression.
      ((and
        (or (field-is "op")
            (node-is ,elpi-ts-mode--term-type-regex))
@@ -605,12 +614,6 @@ Assumes that the current node is the right child of an \"app_term\" node."
      ((or (field-is "op")
           (node-is ,elpi-ts-mode--term-type-regex))
       elpi-ts-mode--anchor-op-expr-line 0)
-     ((match "rparen" "paren_term") parent 0)
-     ((match "rcurly" "spilled_term") parent 0)
-     ((parent-is ,(rx string-start
-                      (or "paren_term" "spilled_term")
-                      string-end))
-      parent elpi-ts-mode-indent-offset)
      ;; Indenting declarations
      ((parent-is "kind_term") parent-bol elpi-ts-mode-indent-offset)
      ;; Program and name-space sections
