@@ -1701,10 +1701,6 @@
         {
           "type": "SYMBOL",
           "name": "paren_term"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "missing"
         }
       ]
     },
@@ -5092,17 +5088,6 @@
           }
         }
       ]
-    },
-    "missing": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PREC",
-        "value": -100,
-        "content": {
-          "type": "STRING",
-          "value": ""
-        }
-      }
     }
   },
   "extras": [

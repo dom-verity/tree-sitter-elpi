@@ -114,10 +114,6 @@
             "named": true
           },
           {
-            "type": "missing",
-            "named": true
-          },
-          {
             "type": "multi_bind",
             "named": true
           },
@@ -229,10 +225,6 @@
             "named": true
           },
           {
-            "type": "missing",
-            "named": true
-          },
-          {
             "type": "multi_bind",
             "named": true
           },
@@ -300,10 +292,6 @@
           },
           {
             "type": "list_term",
-            "named": true
-          },
-          {
-            "type": "missing",
             "named": true
           },
           {
@@ -492,10 +480,6 @@
           "named": true
         },
         {
-          "type": "missing",
-          "named": true
-        },
-        {
           "type": "multi_bind",
           "named": true
         },
@@ -580,10 +564,6 @@
           },
           {
             "type": "list_term",
-            "named": true
-          },
-          {
-            "type": "missing",
             "named": true
           },
           {
@@ -697,10 +677,6 @@
         },
         {
           "type": "list_term",
-          "named": true
-        },
-        {
-          "type": "missing",
           "named": true
         },
         {
@@ -1146,10 +1122,6 @@
             "named": true
           },
           {
-            "type": "missing",
-            "named": true
-          },
-          {
             "type": "multi_bind",
             "named": true
           },
@@ -1346,10 +1318,6 @@
             "named": true
           },
           {
-            "type": "missing",
-            "named": true
-          },
-          {
             "type": "multi_bind",
             "named": true
           },
@@ -1520,10 +1488,6 @@
           "named": true
         },
         {
-          "type": "missing",
-          "named": true
-        },
-        {
           "type": "multi_bind",
           "named": true
         },
@@ -1689,10 +1653,6 @@
           "named": true
         },
         {
-          "type": "missing",
-          "named": true
-        },
-        {
           "type": "multi_bind",
           "named": true
         },
@@ -1851,10 +1811,6 @@
           },
           {
             "type": "list_term",
-            "named": true
-          },
-          {
-            "type": "missing",
             "named": true
           },
           {
@@ -2070,10 +2026,6 @@
             "named": true
           },
           {
-            "type": "missing",
-            "named": true
-          },
-          {
             "type": "multi_bind",
             "named": true
           },
@@ -2161,10 +2113,6 @@
           },
           {
             "type": "list_term",
-            "named": true
-          },
-          {
-            "type": "missing",
             "named": true
           },
           {
@@ -2309,10 +2257,6 @@
           },
           {
             "type": "list_term",
-            "named": true
-          },
-          {
-            "type": "missing",
             "named": true
           },
           {
@@ -2525,10 +2469,6 @@
         },
         {
           "type": "lparen",
-          "named": true
-        },
-        {
-          "type": "missing",
           "named": true
         },
         {
@@ -2753,10 +2693,6 @@
           },
           {
             "type": "list_term",
-            "named": true
-          },
-          {
-            "type": "missing",
             "named": true
           },
           {
@@ -3339,10 +3275,6 @@
   },
   {
     "type": "minuss",
-    "named": true
-  },
-  {
-    "type": "missing",
     "named": true
   },
   {
