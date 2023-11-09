@@ -203,26 +203,23 @@ module.exports = grammar({
 
         // Type declarations
         type_term: $ => choice(
-            $._ctype_term,
-            infix_rule($, "arrow", $.type_term, $.type_term)
+            $.atype_term,
+            infix_rule($, "arrow", $.type_term, $.type_term),
+            $.paren_type_term
         ),
 
-        _ctype_term: $ => choice(
+        atype_term: $ => choice(
             $.constant,
-            $._atype_term,
-            seq($.lparen, $.type_term, $.rparen)
-        ),
-
-        _atype_term: $ => apply_prec("atomic", seq(
-            $.constant,
-            repeat1($._atype_param)
-        )),
+            apply_prec("app",
+                       seq(field("left", $.atype_term),
+                           field("right", $._atype_param)))),
 
         _atype_param: $ => choice(
             $.string,
             $.constant,
-            seq($.lparen, $.type_term, $.rparen)
-        ),
+            $.paren_type_term),
+
+        paren_type_term: $ => seq($.lparen, $.type_term, $.rparen),
 
         type_decl: $ => seq(
             optional($.attributes), $.type, sep_list1($.comma, $.constant),
