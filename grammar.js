@@ -193,18 +193,18 @@ module.exports = grammar({
         ),
 
         // Kind declarations
-        kind_term: $ => choice(
+        _kind_term: $ => choice(
             $.typeid,
-            infix_rule($, "arrow", $.typeid, $.kind_term)
+            infix_rule($, "arrow", $.typeid, $._kind_term)
         ),
 
         kind_decl: $ => seq($.kind, sep_list1($.comma, $.constant),
-                            $.kind_term, $._terminator),
+                            $._kind_term, $._terminator),
 
         // Type declarations
-        type_term: $ => choice(
+        _type_term: $ => choice(
             $.atype_term,
-            infix_rule($, "arrow", $.type_term, $.type_term),
+            infix_rule($, "arrow", $._type_term, $._type_term),
             $.paren_type_term
         ),
 
@@ -219,11 +219,11 @@ module.exports = grammar({
             $.constant,
             $.paren_type_term),
 
-        paren_type_term: $ => seq($.lparen, $.type_term, $.rparen),
+        paren_type_term: $ => seq($.lparen, $._type_term, $.rparen),
 
         type_decl: $ => seq(
             optional($.attributes), $.type, sep_list1($.comma, $.constant),
-            $.type_term, $._terminator
+            $._type_term, $._terminator
         ),
 
         // Type abbreviation
@@ -233,7 +233,7 @@ module.exports = grammar({
             // seq($.lparen, $.abbrev_form, $.rparen)
         ),
 
-        abbrev_decl: $ => seq($.typeabbrev, $.abbrev_form, $.type_term,
+        abbrev_decl: $ => seq($.typeabbrev, $.abbrev_form, $._type_term,
                               $._terminator),
 
         // Fixity declaration - compatible with Teyjus, parse error in ELPI
@@ -257,7 +257,7 @@ module.exports = grammar({
             sep_list(optional($.comma), $.pred_item), $._terminator
         ),
 
-        pred_item: $ => seq($.io_colon, $.type_term),
+        pred_item: $ => seq($.io_colon, $._type_term),
 
         // Clause declarations, the syntax of these is a subset of term syntax.
         clause_decl: $ => seq(
@@ -297,7 +297,7 @@ module.exports = grammar({
 
         // Local declaration
         local_decl: $ => seq(
-            $.local, sep_list1($.comma, $.constant), optional($.type_term),
+            $.local, sep_list1($.comma, $.constant), optional($._type_term),
             $._terminator
         ),
 
@@ -314,11 +314,11 @@ module.exports = grammar({
         module_decl: $ => seq($.module, $.constant, $._terminator),
         sig_decl: $ => seq($.sig, $.constant, $._terminator),
         exportdef_decl: $ => seq($.exportdef, sep_list1($.comma, $.constant),
-                                 optional($.type_term), $._terminator),
+                                 optional($._type_term), $._terminator),
         localkind_decl: $ => seq($.localkind, sep_list1($.comma, $.constant),
                                  $._terminator),
         useonly_decl: $ => seq($.useonly, sep_list1($.comma, $.constant),
-                               optional($.type_term), $._terminator),
+                               optional($._type_term), $._terminator),
         closed_decl: $ => seq($.closed, sep_list1($.comma, $.constant),
                               $._terminator),
 
@@ -442,14 +442,14 @@ module.exports = grammar({
         /* not sure if we are allowing typed identifiers...
            typedid: $ => choice(
            $.abstoken,
-           seq($.abstoken, $.colon, $.type_term),
-           seq($.lparen, $.typedid, $.type_term)
+           seq($.abstoken, $.colon, $._type_term),
+           seq($.lparen, $.typedid, $._type_term)
            ),
 
            typedname: $ => choice(
            $.name,
-           seq($.name, $.colon, $.type_term),
-           seq($.lparen, $.typedname, $.type_term)
+           seq($.name, $.colon, $._type_term),
+           seq($.lparen, $.typedname, $._type_term)
            ),
         */
 

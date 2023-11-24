@@ -414,7 +414,7 @@
         }
       ]
     },
-    "kind_term": {
+    "_kind_term": {
       "type": "CHOICE",
       "members": [
         {
@@ -448,7 +448,7 @@
                 "name": "right",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "kind_term"
+                  "name": "_kind_term"
                 }
               }
             ]
@@ -490,7 +490,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "kind_term"
+          "name": "_kind_term"
         },
         {
           "type": "SYMBOL",
@@ -498,7 +498,7 @@
         }
       ]
     },
-    "type_term": {
+    "_type_term": {
       "type": "CHOICE",
       "members": [
         {
@@ -516,7 +516,7 @@
                 "name": "left",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "type_term"
+                  "name": "_type_term"
                 }
               },
               {
@@ -532,7 +532,7 @@
                 "name": "right",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "type_term"
+                  "name": "_type_term"
                 }
               }
             ]
@@ -604,7 +604,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "type_term"
+          "name": "_type_term"
         },
         {
           "type": "SYMBOL",
@@ -658,7 +658,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "type_term"
+          "name": "_type_term"
         },
         {
           "type": "SYMBOL",
@@ -712,7 +712,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "type_term"
+          "name": "_type_term"
         },
         {
           "type": "SYMBOL",
@@ -906,7 +906,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "type_term"
+          "name": "_type_term"
         }
       ]
     },
@@ -1182,7 +1182,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "type_term"
+              "name": "_type_term"
             },
             {
               "type": "BLANK"
@@ -1295,7 +1295,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "type_term"
+              "name": "_type_term"
             },
             {
               "type": "BLANK"
@@ -1383,7 +1383,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "type_term"
+              "name": "_type_term"
             },
             {
               "type": "BLANK"
