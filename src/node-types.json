@@ -461,17 +461,21 @@
     "fields": {
       "left": {
         "multiple": false,
-        "required": false,
+        "required": true,
         "types": [
           {
             "type": "atype_term",
+            "named": true
+          },
+          {
+            "type": "constant",
             "named": true
           }
         ]
       },
       "right": {
         "multiple": false,
-        "required": false,
+        "required": true,
         "types": [
           {
             "type": "constant",
@@ -487,16 +491,6 @@
           }
         ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "constant",
-          "named": true
-        }
-      ]
     }
   },
   {

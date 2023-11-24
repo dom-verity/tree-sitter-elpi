@@ -208,11 +208,12 @@ module.exports = grammar({
             $.paren_type_term
         ),
 
-        atype_term: $ => choice(
-            $.constant,
-            apply_prec("app",
-                       seq(field("left", $.atype_term),
-                           field("right", $._atype_param)))),
+        _atype_head: $ => choice($.constant, $.atype_term),
+
+        atype_term: $ => apply_prec(
+            "app",
+            seq(field("left", $._atype_head),
+                field("right", $._atype_param))),
 
         _atype_param: $ => choice(
             $.string,
